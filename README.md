@@ -2,6 +2,11 @@
 
 A Model Context Protocol (MCP) server that enhances Claude AI's capabilities by providing persistent memory storage for Infrastructure-as-Code (IaC) components, with a focus on version tracking and relationship mapping for Terraform and Ansible resources.
 
+> [!NOTE]  
+> This was a personal project to determine the state of AI's ability if the person using it (me)
+> doesn't have subject matter expertise (lack of Python knowledge).  Since it has become rather cost
+> prohibitive, I do not intend to develop or maintain this project further.
+
 ## Overview
 
 The IaC Memory MCP Server addresses the challenge of maintaining accurate, version-aware context for IaC components by providing:
