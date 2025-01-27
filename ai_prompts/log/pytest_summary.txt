@@ -1,0 +1,555 @@
+> /run CI=true .venv/bin/python -m pytest src/tests/test_integration.py --log-cli-level=INFO -v                                                            
+
+============================= test session starts ==============================
+platform linux -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0 -- /home/herman/Documents/vscode/iac-memory-mcp-server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/herman/Documents/vscode/iac-memory-mcp-server
+configfile: pytest.ini
+plugins: timeout-2.3.1, anyio-4.8.0, asyncio-0.25.2
+timeout: 60.0s
+timeout method: signal
+timeout func_only: True
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=function
+collected 1 item                                                               
+
+src/tests/test_integration.py::test_server_lifecycle 
+-------------------------------- live log setup --------------------------------
+INFO     root:test_integration.py:25 Starting MCP session fixture setup
+ERROR    root:mcp_utils.py:49 Session initialization timed out after 15.0s
+ERROR    root:mcp_utils.py:61 Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+Operation: test
+ERROR    root:test_integration.py:35 Session setup failed: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+Operation: test
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 149, in stdio_client
+    process,
+    ^^^^^^^
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/abc/_resources.py", line 29, in __aexit__
+    await self.aclose()
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1066, in aclose
+    await self.wait()
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1074, in wait
+    return await self._process.wait()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/asyncio/subprocess.py", line 137, in wait
+    return await self._transport._wait()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/asyncio/base_subprocess.py", line 248, in _wait
+    return await waiter
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError: Cancelled by cancel scope 728f52a65160
+
+During handling of the above exception, another exception occurred:
+
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 36, in mcp_test_context
+  |     async with stdio_client(server_params) as streams:
+  |                ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  |   File "/usr/lib/python3.13/contextlib.py", line 235, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 148, in stdio_client
+  |     anyio.create_task_group() as tg,
+  |     ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 767, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     )
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 124, in stdout_reader
+    |     await read_stream_writer.send(exc)
+    |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/streams/memory.py", line 255, in send
+    |     raise BrokenResourceError from None
+    | anyio.BrokenResourceError
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_integration.py", line 27, in mcp_session
+    async with mcp_test_context(
+               ~~~~~~~~~~~~~~~~^
+        operation_name="test",
+        ^^^^^^^^^^^^^^^^^^^^^^
+        env={"PYTHONUNBUFFERED": "1", "MCP_DEBUG": "1"},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ) as session:
+    ^
+  File "/usr/lib/python3.13/contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 62, in mcp_test_context
+    raise MCPTestError(error_msg) from e
+tests.test_utils.exceptions.MCPTestError: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+Operation: test
+
+ERROR                                                                    [100%]
+
+==================================== ERRORS ====================================
+___________________ ERROR at setup of test_server_lifecycle ____________________
+
+server = StdioServerParameters(command='python', args=['-m', 'iac_memory_mcp_server', '--debug', '--test-mode'], env={'PYTHONPA...thon3.13/site-packages', 'PYTHONUNBUFFERED': '1', 'MCP_DEBUG': '1'}, encoding='utf-8', encoding_error_handler='strict')
+
+    @asynccontextmanager
+    async def stdio_client(server: StdioServerParameters):
+        """
+        Client transport for stdio: this will connect to a server by spawning a
+        process and communicating with it over stdin/stdout.
+        """
+        read_stream: MemoryObjectReceiveStream[types.JSONRPCMessage | Exception]
+        read_stream_writer: MemoryObjectSendStream[types.JSONRPCMessage | Exception]
+    
+        write_stream: MemoryObjectSendStream[types.JSONRPCMessage]
+        write_stream_reader: MemoryObjectReceiveStream[types.JSONRPCMessage]
+    
+        read_stream_writer, read_stream = anyio.create_memory_object_stream(0)
+        write_stream, write_stream_reader = anyio.create_memory_object_stream(0)
+    
+        process = await anyio.open_process(
+            [server.command, *server.args],
+            env=server.env if server.env is not None else get_default_environment(),
+            stderr=sys.stderr,
+        )
+    
+        async def stdout_reader():
+            assert process.stdout, "Opened process is missing stdout"
+    
+            try:
+                async with read_stream_writer:
+                    buffer = ""
+                    async for chunk in TextReceiveStream(
+                        process.stdout,
+                        encoding=server.encoding,
+                        errors=server.encoding_error_handler,
+                    ):
+                        lines = (buffer + chunk).split("\n")
+                        buffer = lines.pop()
+    
+                        for line in lines:
+                            try:
+                                message = types.JSONRPCMessage.model_validate_json(line)
+                            except Exception as exc:
+                                await read_stream_writer.send(exc)
+                                continue
+    
+                            await read_stream_writer.send(message)
+            except anyio.ClosedResourceError:
+                await anyio.lowlevel.checkpoint()
+    
+        async def stdin_writer():
+            assert process.stdin, "Opened process is missing stdin"
+    
+            try:
+                async with write_stream_reader:
+                    async for message in write_stream_reader:
+                        json = message.model_dump_json(by_alias=True, exclude_none=True)
+                        await process.stdin.send(
+                            (json + "\n").encode(
+                                encoding=server.encoding,
+                                errors=server.encoding_error_handler,
+                            )
+                        )
+            except anyio.ClosedResourceError:
+                await anyio.lowlevel.checkpoint()
+    
+        async with (
+            anyio.create_task_group() as tg,
+>           process,
+        ):
+
+.venv/lib/python3.13/site-packages/mcp/client/stdio.py:149: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+.venv/lib/python3.13/site-packages/anyio/abc/_resources.py:29: in __aexit__
+    await self.aclose()
+.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py:1066: in aclose
+    await self.wait()
+.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py:1074: in wait
+    return await self._process.wait()
+/usr/lib/python3.13/asyncio/subprocess.py:137: in wait
+    return await self._transport._wait()
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <_UnixSubprocessTransport closed pid=17534 returncode=-9 stdin=<_UnixWritePipeTransport closed fd=15 closed> stdout=<_UnixReadPipeTransport closed fd=16 closed>>
+
+    async def _wait(self):
+        """Wait until the process exit and return the process return code.
+    
+        This method is a coroutine."""
+        if self._returncode is not None:
+            return self._returncode
+    
+        waiter = self._loop.create_future()
+        self._exit_waiters.append(waiter)
+>       return await waiter
+E       asyncio.exceptions.CancelledError: Cancelled by cancel scope 728f52a65160
+
+/usr/lib/python3.13/asyncio/base_subprocess.py:248: CancelledError
+
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 149, in stdio_client
+    process,
+    ^^^^^^^
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/abc/_resources.py", line 29, in __aexit__
+    await self.aclose()
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1066, in aclose
+    await self.wait()
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1074, in wait
+    return await self._process.wait()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/asyncio/subprocess.py", line 137, in wait
+    return await self._transport._wait()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/asyncio/base_subprocess.py", line 248, in _wait
+    return await waiter
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError: Cancelled by cancel scope 728f52a65160
+
+During handling of the above exception, another exception occurred:
+
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 36, in mcp_test_context
+  |     async with stdio_client(server_params) as streams:
+  |                ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  |   File "/usr/lib/python3.13/contextlib.py", line 235, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 148, in stdio_client
+  |     anyio.create_task_group() as tg,
+  |     ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 767, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     )
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 124, in stdout_reader
+    |     await read_stream_writer.send(exc)
+    |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/streams/memory.py", line 255, in send
+    |     raise BrokenResourceError from None
+    | anyio.BrokenResourceError
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+event_loop = <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+    @pytest_asyncio.fixture(scope="function")
+    async def mcp_session(event_loop):
+        """Fixture that provides an MCP session with proper async setup."""
+        logging.info("Starting MCP session fixture setup")
+        try:
+>           async with mcp_test_context(
+                operation_name="test",
+                env={"PYTHONUNBUFFERED": "1", "MCP_DEBUG": "1"},
+            ) as session:
+
+src/tests/test_integration.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:214: in __aenter__
+    return await anext(self.gen)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+operation_name = 'test', env = {'MCP_DEBUG': '1', 'PYTHONUNBUFFERED': '1'}
+timeout = 30.0
+
+    @asynccontextmanager
+    async def mcp_test_context(
+        operation_name: str = "test",
+        env: Optional[Dict[str, str]] = None,
+        timeout: float = 30.0,
+    ) -> AsyncGenerator[ClientSession, None]:
+        """Context manager for MCP client testing with proper timeout handling."""
+        base_env = {
+            "PYTHONPATH": "src:.venv/lib/python3.13/site-packages",  # Include both src and virtualenv packages
+            "PYTHONUNBUFFERED": "1",
+            "MCP_DEBUG": "1",
+        }
+        if env:
+            base_env.update(env)
+    
+        server_params = StdioServerParameters(
+            command="python",
+            args=["-m", "iac_memory_mcp_server", "--debug", "--test-mode"],
+            env=base_env,
+            startup_timeout=timeout / 2,  # Allow half the timeout for startup
+        )
+    
+        try:
+            async with stdio_client(server_params) as streams:
+                read_stream, write_stream = streams
+                async with ClientSession(read_stream, write_stream) as session:
+                    try:
+                        # Initialize with timeout
+                        await asyncio.wait_for(
+                            session.initialize(),
+                            timeout=timeout  # Use full timeout for initialization
+                        )
+                        logging.info(f"MCP session initialized for {operation_name}")
+                        yield session
+                    except asyncio.TimeoutError as e:
+                        error_msg = f"Session initialization timed out after {timeout/2}s"
+                        logging.error(error_msg)
+                        raise MCPTestError(error_msg) from e
+                    except Exception as e:
+                        error_msg = f"Session initialization failed: {str(e)}"
+                        logging.error(error_msg)
+                        raise MCPTestError(error_msg) from e
+    
+        except Exception as e:
+            error_msg = (
+                f"Failed to establish MCP test context: {str(e)}\n"
+                f"Operation: {operation_name}"
+            )
+            logging.error(error_msg)
+>           raise MCPTestError(error_msg) from e
+E           tests.test_utils.exceptions.MCPTestError: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+E           Operation: test
+
+src/tests/test_utils/mcp_utils.py:62: MCPTestError
+
+During handling of the above exception, another exception occurred:
+
+event_loop = <_UnixSelectorEventLoop running=False closed=False debug=False>
+
+    @pytest_asyncio.fixture(scope="function")
+    async def mcp_session(event_loop):
+        """Fixture that provides an MCP session with proper async setup."""
+        logging.info("Starting MCP session fixture setup")
+        try:
+            async with mcp_test_context(
+                operation_name="test",
+                env={"PYTHONUNBUFFERED": "1", "MCP_DEBUG": "1"},
+            ) as session:
+                logging.info("MCP test context established")
+                yield session
+        except Exception as e:
+            error_msg = f"Session setup failed: {str(e)}\n{traceback.format_exc()}"
+            logging.error(error_msg)
+>           raise MCPTestError(error_msg)
+E           tests.test_utils.exceptions.MCPTestError: Session setup failed: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+E           Operation: test
+E           Traceback (most recent call last):
+E             File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 149, in stdio_client
+E               process,
+E               ^^^^^^^
+E             File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/abc/_resources.py", line 29, in __aexit__
+E               await self.aclose()
+E             File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1066, in aclose
+E               await self.wait()
+E             File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1074, in wait
+E               return await self._process.wait()
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             File "/usr/lib/python3.13/asyncio/subprocess.py", line 137, in wait
+E               return await self._transport._wait()
+E                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             File "/usr/lib/python3.13/asyncio/base_subprocess.py", line 248, in _wait
+E               return await waiter
+E                      ^^^^^^^^^^^^
+E           asyncio.exceptions.CancelledError: Cancelled by cancel scope 728f52a65160
+E           
+E           During handling of the above exception, another exception occurred:
+E           
+E             + Exception Group Traceback (most recent call last):
+E             |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 36, in mcp_test_context
+E             |     async with stdio_client(server_params) as streams:
+E             |                ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+E             |   File "/usr/lib/python3.13/contextlib.py", line 235, in __aexit__
+E             |     await self.gen.athrow(value)
+E             |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 148, in stdio_client
+E             |     anyio.create_task_group() as tg,
+E             |     ~~~~~~~~~~~~~~~~~~~~~~~^^
+E             |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 767, in __aexit__
+E             |     raise BaseExceptionGroup(
+E             |         "unhandled errors in a TaskGroup", self._exceptions
+E             |     )
+E             | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+E             +-+---------------- 1 ----------------
+E               | Traceback (most recent call last):
+E               |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 124, in stdout_reader
+E               |     await read_stream_writer.send(exc)
+E               |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/streams/memory.py", line 255, in send
+E               |     raise BrokenResourceError from None
+E               | anyio.BrokenResourceError
+E               +------------------------------------
+E           
+E           The above exception was the direct cause of the following exception:
+E           
+E           Traceback (most recent call last):
+E             File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_integration.py", line 27, in mcp_session
+E               async with mcp_test_context(
+E                          ~~~~~~~~~~~~~~~~^
+E                   operation_name="test",
+E                   ^^^^^^^^^^^^^^^^^^^^^^
+E                   env={"PYTHONUNBUFFERED": "1", "MCP_DEBUG": "1"},
+E                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E               ) as session:
+E               ^
+E             File "/usr/lib/python3.13/contextlib.py", line 214, in __aenter__
+E               return await anext(self.gen)
+E                      ^^^^^^^^^^^^^^^^^^^^^
+E             File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 62, in mcp_test_context
+E               raise MCPTestError(error_msg) from e
+E           tests.test_utils.exceptions.MCPTestError: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+E           Operation: test
+
+src/tests/test_integration.py:36: MCPTestError
+---------------------------- Captured stdout setup -----------------------------
+
+Connecting to database: /tmp/pytest-of-herman/pytest-10/test_db0/test.db
+------------------------------ Captured log setup ------------------------------
+INFO     root:test_integration.py:25 Starting MCP session fixture setup
+ERROR    root:mcp_utils.py:49 Session initialization timed out after 15.0s
+ERROR    root:mcp_utils.py:61 Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+Operation: test
+ERROR    root:test_integration.py:35 Session setup failed: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+Operation: test
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 149, in stdio_client
+    process,
+    ^^^^^^^
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/abc/_resources.py", line 29, in __aexit__
+    await self.aclose()
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1066, in aclose
+    await self.wait()
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1074, in wait
+    return await self._process.wait()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/asyncio/subprocess.py", line 137, in wait
+    return await self._transport._wait()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/asyncio/base_subprocess.py", line 248, in _wait
+    return await waiter
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError: Cancelled by cancel scope 728f52a65160
+
+During handling of the above exception, another exception occurred:
+
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 36, in mcp_test_context
+  |     async with stdio_client(server_params) as streams:
+  |                ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  |   File "/usr/lib/python3.13/contextlib.py", line 235, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 148, in stdio_client
+  |     anyio.create_task_group() as tg,
+  |     ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 767, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     )
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 124, in stdout_reader
+    |     await read_stream_writer.send(exc)
+    |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/streams/memory.py", line 255, in send
+    |     raise BrokenResourceError from None
+    | anyio.BrokenResourceError
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_integration.py", line 27, in mcp_session
+    async with mcp_test_context(
+               ~~~~~~~~~~~~~~~~^
+        operation_name="test",
+        ^^^^^^^^^^^^^^^^^^^^^^
+        env={"PYTHONUNBUFFERED": "1", "MCP_DEBUG": "1"},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ) as session:
+    ^
+  File "/usr/lib/python3.13/contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 62, in mcp_test_context
+    raise MCPTestError(error_msg) from e
+tests.test_utils.exceptions.MCPTestError: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+Operation: test
+=============================== warnings summary ===============================
+.venv/lib/python3.13/site-packages/pytest_asyncio/plugin.py:256
+  /home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/pytest_asyncio/plugin.py:256: PytestDeprecationWarning: mcp_session is asynchronous and explicitly requests the "event_loop" fixture. Asynchronous fixtures and test functions should use "asyncio.get_running_loop()" instead.
+    warnings.warn(
+
+src/tests/test_integration.py::test_server_lifecycle
+  /home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/pytest_asyncio/plugin.py:867: DeprecationWarning: The event_loop fixture provided by pytest-asyncio has been redefined in
+  /home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_integration.py:14
+  Replacing the event_loop fixture with a custom implementation is deprecated
+  and will lead to errors in the future.
+  If you want to request an asyncio event loop with a scope other than function
+  scope, use the "loop_scope" argument to the asyncio mark when marking the tests.
+  If you want to return different types of event loops, use the event_loop_policy
+  fixture.
+  
+    warnings.warn(
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+ERROR src/tests/test_integration.py::test_server_lifecycle - tests.test_utils.exceptions.MCPTestError: Session setup failed: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+Operation: test
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 149, in stdio_client
+    process,
+    ^^^^^^^
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/abc/_resources.py", line 29, in __aexit__
+    await self.aclose()
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1066, in aclose
+    await self.wait()
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 1074, in wait
+    return await self._process.wait()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/asyncio/subprocess.py", line 137, in wait
+    return await self._transport._wait()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/asyncio/base_subprocess.py", line 248, in _wait
+    return await waiter
+           ^^^^^^^^^^^^
+asyncio.exceptions.CancelledError: Cancelled by cancel scope 728f52a65160
+
+During handling of the above exception, another exception occurred:
+
+  + Exception Group Traceback (most recent call last):
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 36, in mcp_test_context
+  |     async with stdio_client(server_params) as streams:
+  |                ~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  |   File "/usr/lib/python3.13/contextlib.py", line 235, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 148, in stdio_client
+  |     anyio.create_task_group() as tg,
+  |     ~~~~~~~~~~~~~~~~~~~~~~~^^
+  |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/_backends/_asyncio.py", line 767, in __aexit__
+  |     raise BaseExceptionGroup(
+  |         "unhandled errors in a TaskGroup", self._exceptions
+  |     )
+  | ExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/mcp/client/stdio.py", line 124, in stdout_reader
+    |     await read_stream_writer.send(exc)
+    |   File "/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/anyio/streams/memory.py", line 255, in send
+    |     raise BrokenResourceError from None
+    | anyio.BrokenResourceError
+    +------------------------------------
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_integration.py", line 27, in mcp_session
+    async with mcp_test_context(
+               ~~~~~~~~~~~~~~~~^
+        operation_name="test",
+        ^^^^^^^^^^^^^^^^^^^^^^
+        env={"PYTHONUNBUFFERED": "1", "MCP_DEBUG": "1"},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ) as session:
+    ^
+  File "/usr/lib/python3.13/contextlib.py", line 214, in __aenter__
+    return await anext(self.gen)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_utils/mcp_utils.py", line 62, in mcp_test_context
+    raise MCPTestError(error_msg) from e
+tests.test_utils.exceptions.MCPTestError: Failed to establish MCP test context: unhandled errors in a TaskGroup (1 sub-exception)
+Operation: test
+======================== 2 warnings, 1 error in 30.10s =========================

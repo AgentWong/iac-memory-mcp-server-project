@@ -1,0 +1,3 @@
+To run these tests, you'll need to:
+1. Install the MCP Inspector: `npm install -g @modelcontextprotocol/inspector`
+2. Run with: `pytest -v src/tests/test_integration.py -m integration`

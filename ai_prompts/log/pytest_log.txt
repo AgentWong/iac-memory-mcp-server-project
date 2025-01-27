@@ -1,0 +1,203 @@
+/home/herman/Documents/vscode/iac-memory-mcp-server/.venv/lib/python3.13/site-packages/pytest_asyncio/plugin.py:207: PytestDeprecationWarning: The configuration option "asyncio_default_fixture_loop_scope" is unset.
+The event loop scope for asynchronous fixtures will default to the fixture caching scope. Future versions of pytest-asyncio will default the loop scope for asynchronous fixtures to function scope. Set the default fixture loop scope explicitly in order to avoid unexpected behavior in the future. Valid fixture loop scopes are: "function", "class", "module", "package", "session"
+
+  warnings.warn(PytestDeprecationWarning(_DEFAULT_FIXTURE_LOOP_SCOPE_UNSET))
+============================= test session starts ==============================
+platform linux -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0 -- /home/herman/Documents/vscode/iac-memory-mcp-server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/herman/Documents/vscode/iac-memory-mcp-server
+configfile: pytest.ini
+plugins: timeout-2.3.1, anyio-4.8.0, asyncio-0.25.2
+timeout: 60.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None
+collecting ... collected 3 items
+
+src/tests/test_integration.py::test_server_lifecycle PASSED              [ 33%]
+src/tests/test_integration.py::test_ansible_tools FAILED                 [ 66%]
+src/tests/test_integration.py::test_entity_tools PASSED                  [100%]
+
+=================================== FAILURES ===================================
+______________________________ test_ansible_tools ______________________________
+
+mcp_session = <mcp.client.session.ClientSession object at 0x72903a2b7b10>
+
+    @pytest.mark.asyncio
+    async def test_ansible_tools(mcp_session):
+        """Test Ansible-specific tool operations.
+    
+        This test verifies all Ansible-related tools:
+        1. Collection management (add, info, list, version history)
+        2. Module management (add, info, list, compatibility)
+        """
+        logger.info("Starting Ansible tools test")
+    
+        try:
+            # Add test collection
+            logger.info("Adding test collection...")
+            result = await mcp_session.call_tool(
+                "add_ansible_collection",
+                {
+                    "name": "test_collection",
+                    "version": "1.0.0",
+                    "source_url": "http://example.com/source",
+                    "doc_url": "http://example.com/docs"
+                }
+            )
+            logger.info("Collection added successfully")
+    
+            # Add test module
+            logger.info("Adding test module...")
+            result = await mcp_session.call_tool(
+                "add_ansible_module",
+                {
+                    "collection": "test_collection",
+                    "name": "test_module",
+                    "module_type": "cloud",
+                    "schema": "{}",
+                    "version": "1.0.0",
+                    "doc_url": "http://example.com/module"
+                }
+            )
+            logger.info("Module added successfully")
+    
+            # Test get_ansible_collection_info
+            logger.info("Testing collection info retrieval...")
+            collection_info = await mcp_session.call_tool(
+                "get_ansible_collection_info",
+                {"collection_name": "test_collection"}
+            )
+            assert hasattr(collection_info, "content"), "Result should have content attribute"
+            assert "test_collection" in collection_info.content[0].text, "Collection not found"
+            logger.info("Collection info retrieval successful")
+    
+            # Test list_ansible_collections
+            logger.info("Testing collection listing...")
+            collections = await mcp_session.call_tool(
+                "list_ansible_collections",
+                {"filter_criteria": {"name_pattern": "test_collection"}}
+            )
+            assert hasattr(collections, "content"), "Result should have content attribute"
+>           assert "test_collection" in collections.content[0].text, "Collection not found in list"
+E           AssertionError: Collection not found in list
+E           assert 'test_collection' in "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined"
+E            +  where "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined" = TextContent(type='text', text="Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined").text
+
+src/tests/test_integration.py:228: AssertionError
+---------------------------- Captured stderr setup -----------------------------
+2025-01-25 19:55:03,923 - iac_memory.db - INFO - Connecting to database: /tmp/pytest-of-herman/pytest-29/test_db1/test.db
+2025-01-25 19:55:03,923 - iac_memory.db - DEBUG - Creating database directory if needed
+2025-01-25 19:55:03,923 - iac_memory.db - INFO - Initializing database schema
+2025-01-25 19:55:03,924 - iac_memory.db - WARNING - Resetting database to initial state
+2025-01-25 19:55:03,925 - iac_memory.db - INFO - Initializing database schema
+2025-01-25 19:55:03,928 - asyncio - DEBUG - Using selector: EpollSelector
+2025-01-25 19:55:03,928 - iac_memory.tests - INFO - Creating MCP test session
+2025-01-25 19:55:03,929 - iac_memory.tests - INFO - Initializing MCP session
+DEBUG - mcp.server.lowlevel.server - Initializing server 'iac-memory-mcp-server'
+DEBUG - asyncio - Using selector: EpollSelector
+INFO - iac_memory.server - Starting MCP server
+INFO - iac_memory.server - Initializing server components
+INFO - iac_memory.server - Initializing database
+INFO - iac_memory.server - Test mode detected - resetting database to clean state
+WARNING - iac_memory.db - Resetting database to initial state
+INFO - iac_memory.db - Initializing database schema
+INFO - iac_memory.server - Database initialized successfully
+INFO - iac_memory.server - Registering request handlers
+DEBUG - mcp.server.lowlevel.server - Registering handler for CallToolRequest
+DEBUG - mcp.server.lowlevel.server - Registering handler for ListToolsRequest
+DEBUG - mcp.server.lowlevel.server - Registering handler for ListResourcesRequest
+DEBUG - mcp.server.lowlevel.server - Registering handler for ReadResourceRequest
+DEBUG - mcp.server.lowlevel.server - Registering handler for ListResourceTemplatesRequest
+DEBUG - mcp.server.lowlevel.server - Registering handler for GetPromptRequest
+DEBUG - mcp.server.lowlevel.server - Registering handler for PromptListRequest
+INFO - iac_memory.server - All handlers registered successfully
+INFO - iac_memory.server - Starting server with stdio transport
+2025-01-25 19:55:04,157 - iac_memory.tests - INFO - MCP session initialized successfully
+------------------------------ Captured log setup ------------------------------
+INFO     iac_memory.db:connection.py:49 Connecting to database: /tmp/pytest-of-herman/pytest-29/test_db1/test.db
+DEBUG    iac_memory.db:connection.py:50 Creating database directory if needed
+INFO     iac_memory.db:connection.py:57 Initializing database schema
+WARNING  iac_memory.db:connection.py:104 Resetting database to initial state
+INFO     iac_memory.db:connection.py:57 Initializing database schema
+DEBUG    asyncio:selector_events.py:64 Using selector: EpollSelector
+INFO     iac_memory.tests:test_integration.py:42 Creating MCP test session
+INFO     iac_memory.tests:test_integration.py:59 Initializing MCP session
+INFO     iac_memory.tests:test_integration.py:61 MCP session initialized successfully
+----------------------------- Captured stderr call -----------------------------
+DEBUG - mcp.server.lowlevel.server - Received message: root=InitializedNotification(method='notifications/initialized', params=None, jsonrpc='2.0')
+2025-01-25 19:55:04,158 - iac_memory.tests - INFO - Starting Ansible tools test
+2025-01-25 19:55:04,158 - iac_memory.tests - INFO - Adding test collection...
+DEBUG - mcp.server.lowlevel.server - Received message: <mcp.shared.session.RequestResponder object at 0x75fd5d2f56d0>
+INFO - mcp.server.lowlevel.server - Processing request of type CallToolRequest
+DEBUG - mcp.server.lowlevel.server - Dispatching request of type CallToolRequest
+INFO - iac_memory.tools.base - Executing tool: add_ansible_collection
+INFO - iac_memory.tools.ansible - Adding Ansible collection
+DEBUG - mcp.server.lowlevel.server - Response sent
+2025-01-25 19:55:04,162 - iac_memory.tests - INFO - Collection added successfully
+2025-01-25 19:55:04,163 - iac_memory.tests - INFO - Adding test module...
+DEBUG - mcp.server.lowlevel.server - Received message: <mcp.shared.session.RequestResponder object at 0x75fd5d2f6350>
+INFO - mcp.server.lowlevel.server - Processing request of type CallToolRequest
+DEBUG - mcp.server.lowlevel.server - Dispatching request of type CallToolRequest
+INFO - iac_memory.tools.base - Executing tool: add_ansible_module
+INFO - iac_memory.tools.ansible - Adding Ansible module
+DEBUG - mcp.server.lowlevel.server - Response sent
+2025-01-25 19:55:04,165 - iac_memory.tests - INFO - Module added successfully
+2025-01-25 19:55:04,165 - iac_memory.tests - INFO - Testing collection info retrieval...
+DEBUG - mcp.server.lowlevel.server - Received message: <mcp.shared.session.RequestResponder object at 0x75fd5d3303e0>
+INFO - mcp.server.lowlevel.server - Processing request of type CallToolRequest
+DEBUG - mcp.server.lowlevel.server - Dispatching request of type CallToolRequest
+INFO - iac_memory.tools.base - Executing tool: get_ansible_collection_info
+INFO - iac_memory.tools.ansible - Getting Ansible collection info
+INFO - iac_memory.db.ansible - Getting Ansible collection info
+DEBUG - mcp.server.lowlevel.server - Response sent
+2025-01-25 19:55:04,166 - iac_memory.tests - INFO - Collection info retrieval successful
+2025-01-25 19:55:04,166 - iac_memory.tests - INFO - Testing collection listing...
+DEBUG - mcp.server.lowlevel.server - Received message: <mcp.shared.session.RequestResponder object at 0x75fd5d330180>
+INFO - mcp.server.lowlevel.server - Processing request of type CallToolRequest
+DEBUG - mcp.server.lowlevel.server - Dispatching request of type CallToolRequest
+INFO - iac_memory.tools.base - Executing tool: list_ansible_collections
+INFO - iac_memory.tools.ansible - Listing Ansible collections
+ERROR - iac_memory.tools.ansible - Failed to list collections: name 'list_ansible_collections' is not defined
+ERROR - iac_memory.tools.base - Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined
+DEBUG - mcp.server.lowlevel.server - Response sent
+2025-01-25 19:55:04,167 - iac_memory.tests - ERROR - Test failed: Collection not found in list
+assert 'test_collection' in "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined"
+ +  where "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined" = TextContent(type='text', text="Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined").text
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_integration.py", line 228, in test_ansible_tools
+    assert "test_collection" in collections.content[0].text, "Collection not found in list"
+AssertionError: Collection not found in list
+assert 'test_collection' in "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined"
+ +  where "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined" = TextContent(type='text', text="Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined").text
+------------------------------ Captured log call -------------------------------
+INFO     iac_memory.tests:test_integration.py:180 Starting Ansible tools test
+INFO     iac_memory.tests:test_integration.py:184 Adding test collection...
+INFO     iac_memory.tests:test_integration.py:194 Collection added successfully
+INFO     iac_memory.tests:test_integration.py:197 Adding test module...
+INFO     iac_memory.tests:test_integration.py:209 Module added successfully
+INFO     iac_memory.tests:test_integration.py:212 Testing collection info retrieval...
+INFO     iac_memory.tests:test_integration.py:219 Collection info retrieval successful
+INFO     iac_memory.tests:test_integration.py:222 Testing collection listing...
+ERROR    iac_memory.tests:test_integration.py:280 Test failed: Collection not found in list
+assert 'test_collection' in "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined"
+ +  where "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined" = TextContent(type='text', text="Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined").text
+Traceback (most recent call last):
+  File "/home/herman/Documents/vscode/iac-memory-mcp-server/src/tests/test_integration.py", line 228, in test_ansible_tools
+    assert "test_collection" in collections.content[0].text, "Collection not found in list"
+AssertionError: Collection not found in list
+assert 'test_collection' in "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined"
+ +  where "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined" = TextContent(type='text', text="Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined").text
+--------------------------- Captured stderr teardown ---------------------------
+2025-01-25 19:55:04,203 - asyncio - DEBUG - Using selector: EpollSelector
+2025-01-25 19:55:04,203 - iac_memory.db - WARNING - Resetting database to initial state
+2025-01-25 19:55:04,203 - iac_memory.db - INFO - Initializing database schema
+---------------------------- Captured log teardown -----------------------------
+DEBUG    asyncio:selector_events.py:64 Using selector: EpollSelector
+WARNING  iac_memory.db:connection.py:104 Resetting database to initial state
+INFO     iac_memory.db:connection.py:57 Initializing database schema
+=========================== short test summary info ============================
+FAILED src/tests/test_integration.py::test_ansible_tools - AssertionError: Collection not found in list
+assert 'test_collection' in "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined"
+ +  where "Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined" = TextContent(type='text', text="Tool execution failed: Failed to list collections: name 'list_ansible_collections' is not defined").text
+========================= 1 failed, 2 passed in 0.83s ==========================

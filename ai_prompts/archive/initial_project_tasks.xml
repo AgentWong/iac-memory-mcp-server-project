@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project status="complete">
+    <metadata>
+        <name>IaC Memory MCP Server</name>
+        <description>Model Context Protocol server for caching and providing IaC tool information</description>
+        <version>0.1.0</version>
+    </metadata>
+
+    <overview status="complete">
+        <goals status="complete">
+            <goal status="complete">Provide persistent storage of IaC tool information</goal>
+            <goal status="complete">Expose tool and resource data through MCP endpoints</goal>
+            <goal status="complete">Allow updates and queries of stored information</goal>
+            <goal status="complete">Implement correct async/sync patterns</goal>
+        </goals>
+        <constraints status="complete">
+            <constraint status="complete">Must use low-level Server from mcp.server</constraint>
+            <constraint status="complete">Single SQLite database for persistence</constraint>
+            <constraint status="complete">Proper async/sync separation required</constraint>
+        </constraints>
+    </overview>
+
+    <tasks status="complete">
+        <!-- Database Setup -->
+        <taskCategory name="Database Implementation" priority="High" status="complete">
+            <task status="complete">
+                <name>Schema Definition</name>
+                <status>complete</status>
+                <description>Create SQL schema for IaC tool and resource information</description>
+                <priority>High</priority>
+                <acceptanceCriteria status="incomplete">
+                    <criterion status="incomplete">Entities and observations tables defined correctly</criterion>
+                    <criterion status="incomplete">Provider resources table defined with required fields</criterion>
+                    <criterion status="incomplete">Ansible collections table defined with required fields</criterion>
+                    <criterion status="incomplete">All required foreign key constraints implemented</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+-- Core tables only
+CREATE TABLE entities (
+    id TEXT PRIMARY KEY,
+    name TEXT NOT NULL,
+    type TEXT NOT NULL
+);
+
+CREATE TABLE observations (
+    entity_id TEXT NOT NULL,
+    content TEXT NOT NULL,
+    FOREIGN KEY (entity_id) REFERENCES entities(id)
+);
+
+CREATE TABLE provider_resources (
+    id TEXT PRIMARY KEY,
+    provider_name TEXT NOT NULL,
+    resource_type TEXT NOT NULL,
+    schema_version TEXT NOT NULL,
+    doc_url TEXT NOT NULL
+);
+
+CREATE TABLE ansible_collections (
+    id TEXT PRIMARY KEY,
+    collection_name TEXT NOT NULL,
+    module_name TEXT NOT NULL,
+    version TEXT NOT NULL,
+    doc_url TEXT NOT NULL
+);
+                    ]]>
+                </referenceImplementation>
+            </task>
+
+            <task status="complete">
+                <name>Database Query Wrapper</name>
+                <status>complete</status>
+                <description>Implement synchronous database operation wrapper with proper error handling</description>
+                <priority>High</priority>
+                <acceptanceCriteria status="incomplete">
+                    <criterion status="incomplete">Synchronous query execution implemented</criterion>
+                    <criterion status="incomplete">Connection management handled properly</criterion>
+                    <criterion status="incomplete">Error handling implemented</criterion>
+                    <criterion status="incomplete">Query parameter sanitization implemented</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+def execute_query(self, query: str, params: tuple = ()) -> list:
+    """Execute query synchronously"""
+    try:
+        with sqlite3.connect(self.db_path) as conn:
+            cursor = conn.execute(query, params)
+            return cursor.fetchall()
+    except sqlite3.Error as e:
+        raise DatabaseError(f"Query execution failed: {str(e)}")
+                    ]]>
+                </referenceImplementation>
+            </task>
+
+            <task status="complete">
+                <name>Database Manager Implementation</name>
+                <status>complete</status>
+                <description>Implement DatabaseManager class with proper initialization and connection handling</description>
+                <priority>High</priority>
+                <acceptanceCriteria status="incomplete">
+                    <criterion status="incomplete">Database path configured correctly</criterion>
+                    <criterion status="incomplete">Schema initialization implemented</criterion>
+                    <criterion status="incomplete">Connection management handled properly</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+class DatabaseManager:
+    def __init__(self):
+        self.db_path = "iac_memory.db"
+        Path(self.db_path).parent.mkdir(parents=True, exist_ok=True)
+        self._init_database()
+    
+    def _init_database(self):
+        """Initialize database synchronously"""
+        with sqlite3.connect(self.db_path) as conn:
+            with open("src/schema.sql") as f:
+                conn.executescript(f.read())
+                    ]]>
+                </referenceImplementation>
+            </task>
+        </taskCategory>
+
+        <!-- Server Implementation -->
+        <taskCategory name="Server Setup" priority="High" status="complete">
+            <task status="complete">
+                <name>MCP Server Initialization</name>
+                <status>complete</status>
+                <description>Implement main server setup with proper initialization and capabilities</description>
+                <priority>High</priority>
+                <dependencies status="incomplete">
+                    <dependency status="incomplete">Database Manager Implementation</dependency>
+                </dependencies>
+                <acceptanceCriteria status="incomplete">
+                    <criterion status="incomplete">Server initialized with correct name and version</criterion>
+                    <criterion status="incomplete">Capabilities properly configured</criterion>
+                    <criterion status="incomplete">Stdio transport configured correctly</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+async def main():
+    db = DatabaseManager()
+    server = Server("iac-memory")
+
+    async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
+        await server.run(
+            read_stream,
+            write_stream,
+            InitializationOptions(
+                server_name="iac-memory",
+                server_version="0.1.0",
+                capabilities=server.get_capabilities(
+                    notification_options=NotificationOptions(),
+                    experimental_capabilities={},
+                ),
+            ),
+        )
+                    ]]>
+                </referenceImplementation>
+            </task>
+        </taskCategory>
+
+        <!-- Resource Handlers -->
+        <taskCategory name="Resource Implementation" priority="High" status="complete">
+            <task status="complete">
+                <name>Resource List Handler</name>
+                <status>complete</status>
+                <description>Implement async handler for listing available resources</description>
+                <priority>High</priority>
+                <dependencies status="incomplete">
+                    <dependency status="incomplete">MCP Server Initialization</dependency>
+                </dependencies>
+                <acceptanceCriteria status="incomplete">
+                    <criterion status="incomplete">Handler is async</criterion>
+                    <criterion status="incomplete">Returns correct Resource type list</criterion>
+                    <criterion status="incomplete">Resources properly described</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+@server.list_resources()
+async def handle_list_resources() -> list[types.Resource]:
+    """Async handler for resource listing"""
+    return [
+        types.Resource(
+            uri="entities://list",
+            name="Entity List",
+            description="List of all entities"
+        )
+    ]
+                    ]]>
+                </referenceImplementation>
+            </task>
+
+            <task status="complete">
+                <name>Resource Get Handler</name>
+                <status>complete</status>
+                <description>Implement async handler for retrieving resource content</description>
+                <priority>High</priority>
+                <dependencies status="incomplete">
+                    <dependency status="incomplete">Resource List Handler</dependency>
+                </dependencies>
+                <acceptanceCriteria status="incomplete">
+                    <criterion status="incomplete">Handler is async</criterion>
+                    <criterion status="incomplete">Database operations are sync</criterion>
+                    <criterion status="incomplete">Proper error handling implemented</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+@server.get_resource()
+async def handle_get_resource(uri: str) -> str:
+    """Async handler with synchronous database operation"""
+    with sqlite3.connect(db.db_path) as conn:
+        result = conn.execute("SELECT * FROM entities").fetchall()
+        return str(result)
+                    ]]>
+                </referenceImplementation>
+            </task>
+        </taskCategory>
+
+        <!-- Tool Handlers -->
+        <taskCategory name="Tool Implementation" priority="High" status="complete">
+            <task status="complete">
+                <name>Entity Creation Tool</name>
+                <status>complete</status>
+                <description>Implement async tool handler for creating new entities</description>
+                <priority>High</priority>
+                <dependencies status="incomplete">
+                    <dependency status="incomplete">Database Manager Implementation</dependency>
+                </dependencies>
+                <acceptanceCriteria status="incomplete">
+                    <criterion status="incomplete">Handler is async</criterion>
+                    <criterion status="incomplete">Database operations are sync</criterion>
+                    <criterion status="incomplete">Progress tracking implemented</criterion>
+                    <criterion status="incomplete">Proper error handling</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+@server.tool()
+async def create_entity(name: str, entity_type: str, ctx: Context) -> str:
+    """Create entity with progress tracking"""
+    await ctx.info(f"Creating entity: {name}")
+    
+    with sqlite3.connect(db.db_path) as conn:
+        conn.execute(
+            "INSERT INTO entities (name, type) VALUES (?, ?)",
+            (name, entity_type)
+        )
+        conn.commit()
+    
+    await ctx.info("Entity created successfully")
+    return "Entity created"
+                    ]]>
+                </referenceImplementation>
+            </task>
+        </taskCategory>
+
+        <!-- Testing -->
+        <taskCategory name="Testing Implementation" priority="High" status="complete">
+            <task status="complete">
+                <name>Async/Sync Boundary Tests</name>
+                <status>complete</status>
+                <description>Implement specific tests for async/sync separation</description>
+                <priority>High</priority>
+                <acceptanceCriteria status="complete">
+                    <criterion status="complete">Verify async MCP handlers</criterion>
+                    <criterion status="complete">Verify sync database operations</criterion>
+                    <criterion status="complete">Test boundary interactions</criterion>
+                    <criterion status="complete">Verify no blocking operations in async code</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+async def test_async_sync_boundaries():
+    """Test proper async/sync separation"""
+    # Setup
+    ctx = MockContext()
+    db = DatabaseManager()
+    
+    # Test async handler with sync operation
+    start_time = time.time()
+    result = await handle_get_resource("test://uri")
+    end_time = time.time()
+    
+    # Verify handler was async but contained sync operation
+    assert (end_time - start_time) < ASYNC_THRESHOLD
+    assert ctx.info_messages
+                    ]]>
+                </referenceImplementation>
+            </task>
+
+            <task status="complete">
+                <name>Context Object Tests</name>
+                <status>complete</status>
+                <description>Implement tests for Context object usage and progress tracking</description>
+                <priority>High</priority>
+                <acceptanceCriteria status="complete">
+                    <criterion status="complete">Progress reporting tested</criterion>
+                    <criterion status="complete">Info messages verified</criterion>
+                    <criterion status="complete">Error handling tested</criterion>
+                    <criterion status="complete">Resource operations tested</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+async def test_context_operations():
+    """Test Context object functionality"""
+    ctx = MockContext()
+    
+    # Test progress reporting
+    await ctx.report_progress(0, 100)
+    assert ctx.last_progress == 0
+    
+    # Test info messages
+    await ctx.info("Processing")
+    assert "Processing" in ctx.info_messages
+    
+    # Test resource operations
+    data = await ctx.read_resource("file://test.txt")
+    assert data is not None
+                    ]]>
+                </referenceImplementation>
+            </task>
+
+            <task status="complete">
+                <name>Unit Test Implementation</name>
+                <status>complete</status>
+                <description>Implement comprehensive unit tests for all components</description>
+                <priority>High</priority>
+                <dependencies status="complete">
+                    <dependency status="complete">Entity Creation Tool</dependency>
+                    <dependency status="complete">Resource Get Handler</dependency>
+                </dependencies>
+                <acceptanceCriteria status="complete">
+                    <criterion status="complete">Async/sync separation tested</criterion>
+                    <criterion status="complete">Database operations verified</criterion>
+                    <criterion status="complete">Progress tracking tested</criterion>
+                </acceptanceCriteria>
+                <referenceImplementation>
+                    <![CDATA[
+async def test_list_entities():
+    """Test async handler with sync database op"""
+    ctx = MockContext()
+    result = await list_entities(ctx)
+    
+    # Verify handler was async
+    assert ctx.info_messages
+    # Verify data was retrieved synchronously
+    assert isinstance(result, str)
+                    ]]>
+                </referenceImplementation>
+            </task>
+
+            <task status="complete">
+                <name>Integration Testing</name>
+                <status>complete</status>
+                <description>Implement MCP Inspector-based integration tests</description>
+                <priority>High</priority>
+                <dependencies status="complete">
+                    <dependency status="complete">Unit Test Implementation</dependency>
+                </dependencies>
+                <acceptanceCriteria status="complete">
+                    <criterion status="complete">Full server lifecycle tested</criterion>
+                    <criterion status="complete">All handlers tested end-to-end</criterion>
+                    <criterion status="complete">Progress reporting verified</criterion>
+                </acceptanceCriteria>
+            </task>
+        </taskCategory>
+    </tasks>
+</project>

@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskGenerationGuide>
+    <metadata>
+        <title>Implement Native MCP SDK Logging</title>
+        <description>Tasks to replace custom logging with native MCP SDK logging functionality</description>
+        <goal>Improve logging capabilities and reduce code complexity by utilizing built-in MCP SDK logging features</goal>
+    </metadata>
+
+    <analysisPhase status="complete">
+        <task name="SDK_Logging_Analysis" status="complete">
+            <description>Analyze MCP SDK native logging capabilities</description>
+            <steps>
+                <step>Review server.session.send_log_message() capabilities for different log levels (info, warn, error)</step>
+                <step>Review client-side logging through session.send_log_message()</step>
+                <step>Document logging context parameters including logger name and correlation IDs</step>
+                <step>Review notification handling for progress updates via send_progress_notification()</step>
+            </steps>
+            <examples>
+                <example>
+                    <code>
+                        # Server-side logging
+                        await ctx.session.send_log_message(
+                            level="info",
+                            data="Starting operation",
+                            logger="tool_executor"
+                        )
+                        
+                        # Progress notification
+                        await ctx.session.send_progress_notification(
+                            progress_token="operation_1",
+                            progress=50,
+                            total=100
+                        )
+                    </code>
+                </example>
+            </examples>
+            <acceptanceCriteria>
+                <criterion status="complete">Complete understanding of MCP SDK logging capabilities</criterion>
+                <criterion status="complete">Documented mapping between current custom logging and SDK equivalents</criterion>
+            </acceptanceCriteria>
+        </task>
+    </analysisPhase>
+
+    <serverImplementationPhase status="complete">
+        <task name="Server_Logging_Implementation" status="complete">
+            <description>Implement native MCP logging in server.py</description>
+            <steps>
+                <step>Replace custom setup_logging() with direct session.send_log_message() usage</step>
+                <step>Update handle_tool_call() to use send_log_message() for operation status</step>
+                <step>Implement error logging using send_log_message(level="error")</step>
+                <step>Add progress reporting using send_progress_notification()</step>
+            </steps>
+            <examples>
+                <example>
+                    <code>
+                        # Replace custom logging with:
+                        async def handle_tool_call(ctx: RequestContext, arguments: dict) -> str:
+                            try:
+                                await ctx.session.send_log_message(
+                                    level="info",
+                                    data=f"Starting tool execution: {arguments}",
+                                    logger="tool_handler"
+                                )
+                                
+                                # Report progress
+                                await ctx.session.send_progress_notification(
+                                    progress_token=ctx.request.id,
+                                    progress=0,
+                                    total=100
+                                )
+                                
+                                result = await execute_tool(arguments)
+                                return result
+                                
+                            except Exception as e:
+                                await ctx.session.send_log_message(
+                                    level="error",
+                                    data=f"Tool execution failed: {str(e)}",
+                                    logger="tool_handler"
+                                )
+                                raise
+                    </code>
+                </example>
+            </examples>
+            <acceptanceCriteria>
+                <criterion status="complete">All custom logging replaced with SDK equivalents</criterion>
+                <criterion status="complete">Error scenarios properly logged using SDK methods</criterion>
+                <criterion status="complete">Progress reporting implemented using SDK capabilities</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task name="Resource_Logging_Updates" status="complete">
+            <description>Update resource handling logging</description>
+            <steps>
+                <step>Implement resource state logging using SDK methods</step>
+                <step>Add resource lifecycle logging</step>
+                <step>Update resource error handling to use SDK logging</step>
+            </steps>
+            <acceptanceCriteria>
+                <criterion status="complete">Resource operations properly logged using SDK methods</criterion>
+                <criterion status="complete">Resource errors correctly logged with context</criterion>
+            </acceptanceCriteria>
+        </task>
+    </serverImplementationPhase>
+
+    <clientImplementationPhase status="complete">
+        <task name="Integration_Test_Logging" status="complete">
+            <description>Update integration tests to use MCP SDK logging</description>
+            <steps>
+                <step>Replace LogContext with direct session.send_log_message() calls</step>
+                <step>Update test fixtures to use session logging methods</step>
+                <step>Replace custom error formatting with SDK error logging</step>
+            </steps>
+            <examples>
+                <example>
+                    <code>
+                        # Replace custom test logging with:
+                        @pytest.mark.asyncio
+                        async def test_tool_execution(mcp_session):
+                            try:
+                                await mcp_session.send_log_message(
+                                    level="info",
+                                    data="Starting tool execution test",
+                                    logger="integration_tests"
+                                )
+                                
+                                result = await mcp_session.call_tool("test_tool", {})
+                                assert result.success
+                                
+                            except Exception as e:
+                                await mcp_session.send_log_message(
+                                    level="error",
+                                    data=f"Test failed: {str(e)}",
+                                    logger="integration_tests"
+                                )
+                                raise
+                    </code>
+                </example>
+            </examples>
+            <acceptanceCriteria>
+                <criterion status="complete">Integration tests using SDK logging methods</criterion>
+                <criterion status="complete">Test failures properly logged with SDK capabilities</criterion>
+                <criterion status="complete">Test progress reporting using SDK methods</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task name="Log_Utils_Deprecation" status="complete">
+            <description>Deprecate and remove custom logging utilities</description>
+            <steps>
+                <step>Identify all custom logging utility usages</step>
+                <step>Replace with equivalent SDK logging methods</step>
+                <step>Remove deprecated custom logging code</step>
+            </steps>
+            <acceptanceCriteria>
+                <criterion status="complete">All custom logging utilities replaced</criterion>
+                <criterion status="complete">No remaining references to custom logging</criterion>
+                <criterion status="complete">Verification that all logging scenarios are covered</criterion>
+            </acceptanceCriteria>
+        </task>
+    </clientImplementationPhase>
+
+    <verificationPhase status="complete">
+        <task name="Testing_And_Verification" status="complete">
+            <description>Verify logging implementation and functionality</description>
+            <steps>
+                <step>Run integration tests with new logging</step>
+                <step>Verify log output format and content</step>
+                <step>Test error scenarios and logging</step>
+                <step>Validate progress reporting</step>
+            </steps>
+            <acceptanceCriteria>
+                <criterion status="complete">All tests passing with new logging</criterion>
+                <criterion status="complete">Log output matches expected format</criterion>
+                <criterion status="complete">Error scenarios properly logged</criterion>
+                <criterion status="complete">Progress correctly reported in logs</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task name="Documentation_Update" status="complete">
+            <description>Update documentation for new logging implementation</description>
+            <steps>
+                <step>Document SDK logging usage</step>
+                <step>Update troubleshooting guides</step>
+                <step>Add logging best practices</step>
+            </steps>
+            <acceptanceCriteria>
+                <criterion status="complete">Documentation reflects new logging implementation</criterion>
+                <criterion status="complete">Troubleshooting guides updated</criterion>
+                <criterion status="complete">Best practices documented</criterion>
+            </acceptanceCriteria>
+        </task>
+    </verificationPhase>
+</taskGenerationGuide>

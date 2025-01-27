@@ -1,0 +1,52 @@
+[project]
+name = "iac-memory-mcp-server"
+version = "0.1.0"
+description = "Custom Memory MCP Server intended to act as a cache between me and the AI about Infrastructure-as-Code information."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "mcp>=1.2.0",
+    "pydantic>=2.6.1",
+    "pydantic-core>=2.14.6", 
+    "anyio>=4.8.0",
+    "jsonschema>=4.21.1",
+    "pytest-asyncio>=0.23.8",
+]
+[[project.authors]]
+name = "Herman Wong"
+email = "3461848+AgentWong@users.noreply.github.com"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project.scripts]
+iac-memory-mcp-server = "iac_memory_mcp_server:main"
+
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.6.8",
+    "pytest>=7.0.0",
+    "black>=23.0.0"
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"
+timeout = 300
+filterwarnings = [
+    "ignore::_pytest.warning_types.PytestReturnNotNoneWarning"
+]
+    
+
+[tool.setuptools.package-data]
+"iac_memory_mcp_server" = ["schema.sql"]
+
+[tool.ruff]
+# Ruff-specific configurations
+line-length = 88
+target-version = "py313"
+lint.select = ["E", "F", "I"]  # Example: select error, flake8, and isort rules
+lint.ignore = [
+    "E501", # Line too long
+    ]

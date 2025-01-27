@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<loggingGuidelines>
+    <metadata>
+        <title>MCP Server Logging Best Practices</title>
+        <version>1.0</version>
+        <date>2025-01-14</date>
+    </metadata>
+
+    <generalRules>
+        <rule name="stdout_restriction">
+            <description>Never write logs to stdout in MCP server applications</description>
+            <rationale>stdout is reserved for MCP protocol communication between client and server</rationale>
+            <enforcement>
+                <method>Configure all Python loggers to use stderr explicitly</method>
+                <method>Review all print statements and redirect to logger</method>
+            </enforcement>
+        </rule>
+
+        <rule name="logging_separation">
+            <description>Maintain clear separation between MCP native logging and Python logging</description>
+            <contexts>
+                <context>
+                    <name>Database Operations</name>
+                    <useCase>Direct database access without MCP session</useCase>
+                    <logging>Use Python logging to stderr only</logging>
+                </context>
+                <context>
+                    <name>Server Handlers</name>
+                    <useCase>Code with active MCP session</useCase>
+                    <logging>Use send_log_message for MCP native logging</logging>
+                </context>
+            </contexts>
+        </rule>
+
+        <rule name="error_handling">
+            <description>Proper error logging and propagation</description>
+            <requirements>
+                <requirement>Log errors before raising exceptions</requirement>
+                <requirement>Include stack traces for debugging</requirement>
+                <requirement>Use appropriate log levels</requirement>
+            </requirements>
+        </rule>
+    </generalRules>
+
+    <loggingImplementation>
+        <pythonLogging>
+            <configuration>
+                <logger name="database">
+                    <handler>StreamHandler(sys.stderr)</handler>
+                    <format>%(asctime)s - %(name)s - %(levelname)s - %(message)s</format>
+                    <level>Configurable through environment</level>
+                </logger>
+            </configuration>
+            <usage>
+                <context>All database operations</context>
+                <context>Initialization code</context>
+                <context>Test framework</context>
+            </usage>
+        </pythonLogging>
+
+        <mcpNativeLogging>
+            <requirements>
+                <requirement>Active ServerSession</requirement>
+                <requirement>Valid request context</requirement>
+            </requirements>
+            <usage>
+                <context>Request handlers</context>
+                <context>Tool execution</context>
+                <context>Server lifecycle events</context>
+            </usage>
+            <methods>
+                <method>
+                    <name>send_log_message</name>
+                    <parameters>
+                        <parameter>level: debug, info, warning, error</parameter>
+                        <parameter>message: log content</parameter>
+                    </parameters>
+                </method>
+            </methods>
+        </mcpNativeLogging>
+    </loggingImplementation>
+
+    <testingGuidelines>
+        <unitTests>
+            <logging>Use Python logging to stderr</logging>
+            <configuration>
+                <setting>Configure logging before test execution</setting>
+                <setting>Use separate log file for tests</setting>
+                <setting>Enable debug logging during test runs</setting>
+            </configuration>
+        </unitTests>
+
+        <integrationTests>
+            <logging>
+                <phase name="setup">Use Python logging to stderr</phase>
+                <phase name="execution">Use MCP native logging when session available</phase>
+            </logging>
+            <requirements>
+                <requirement>Configure logging before creating server</requirement>
+                <requirement>Ensure clean stdio streams for MCP communication</requirement>
+                <requirement>Handle logging errors gracefully</requirement>
+            </requirements>
+        </integrationTests>
+    </testingGuidelines>
+
+    <constraints>
+        <constraint>
+            <name>No stdout usage</name>
+            <description>Never use print or stdout.write in production code</description>
+        </constraint>
+        <constraint>
+            <name>Session requirement</name>
+            <description>send_log_message requires active ServerSession</description>
+        </constraint>
+        <constraint>
+            <name>Log level control</name>
+            <description>Respect configured log levels in all contexts</description>
+        </constraint>
+        <constraint>
+            <name>Error propagation</name>
+            <description>Log errors at appropriate level before raising</description>
+        </constraint>
+    </constraints>
+
+    <bestPractices>
+        <practice>
+            <name>Consistent formatting</name>
+            <description>Use consistent log formatting across all loggers</description>
+        </practice>
+        <practice>
+            <name>Appropriate levels</name>
+            <description>Use appropriate log levels based on message importance</description>
+        </practice>
+        <practice>
+            <name>Contextual information</name>
+            <description>Include relevant context in log messages</description>
+        </practice>
+        <practice>
+            <name>Error handling</name>
+            <description>Log errors with full context before raising exceptions</description>
+        </practice>
+    </bestPractices>
+</loggingGuidelines>

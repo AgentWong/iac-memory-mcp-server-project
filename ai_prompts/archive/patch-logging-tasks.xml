@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskGenerationGuide>
+    <metadata>
+        <title>MCP Server Logging Implementation Tasks</title>
+        <description>Tasks for implementing proper logging separation in MCP server</description>
+        <version>1.0</version>
+        <date>2025-01-14</date>
+    </metadata>
+
+    <overview>
+        <scope>Implement proper logging separation between database operations and MCP server handlers</scope>
+        <goals>
+            <goal>Ensure database operations log to stderr only</goal>
+            <goal>Enable MCP native logging in server handlers</goal>
+            <goal>Fix integration test hanging issues</goal>
+        </goals>
+    </overview>
+
+    <implementationTasks>
+        <databaseLogging status="complete">
+            <task>
+                <name>Configure Database Logger</name>
+                <description>Create and configure dedicated database logger in connection.py</description>
+                <steps>
+                    <step>Import logging and sys modules</step>
+                    <step>Create database logger instance</step>
+                    <step>Configure stderr handler</step>
+                    <step>Set appropriate formatter</step>
+                </steps>
+                <acceptanceCriteria>
+                    <criterion>Logger writes exclusively to stderr</criterion>
+                    <criterion>Proper formatting includes timestamp, module, and level</criterion>
+                </acceptanceCriteria>
+            </task>
+        </databaseLogging>
+
+        <databaseOperations status="complete">
+            <task>
+                <name>Update Database Operations</name>
+                <description>Replace any stdout/MCP logging with database logger in core database modules</description>
+                <files>
+                    <file>ansible.py</file>
+                    <file>connection.py</file>
+                    <file>core.py</file>
+                    <file>entities.py</file>
+                    <file>resources.py</file>
+                    <file>terraform.py</file>
+                </files>
+                <acceptanceCriteria>
+                    <criterion>All database operations use new logger</criterion>
+                    <criterion>No references to send_log_message in database code</criterion>
+                    <criterion>Consistent log levels across operations</criterion>
+                </acceptanceCriteria>
+            </task>
+        </databaseOperations>
+
+        <serverHandlers status="complete">
+            <task>
+                <name>Implement MCP Native Logging</name>
+                <description>Add proper MCP native logging in server request handlers</description>
+                <files>
+                    <file>server.py</file>
+                    <file>tools.py</file>
+                </files>
+                <steps>
+                    <step>Add logging in handle_call_tool</step>
+                    <step>Add logging in request handlers</step>
+                    <step>Add logging for server lifecycle events</step>
+                </steps>
+                <acceptanceCriteria>
+                    <criterion>All handlers use send_log_message when session available</criterion>
+                    <criterion>Proper error reporting through MCP protocol</criterion>
+                </acceptanceCriteria>
+            </task>
+        </serverHandlers>
+
+        <integrationTest status="complete">
+            <task>
+                <name>Fix Integration Test Setup</name>
+                <description>Update integration test configuration to handle logging properly</description>
+                <file>test_integration.py</file>
+                <steps>
+                    <step>Configure base logging to stderr</step>
+                    <step>Update session fixture</step>
+                    <step>Add error handling for logging setup</step>
+                </steps>
+                <acceptanceCriteria>
+                    <criterion>Tests complete without hanging</criterion>
+                    <criterion>All logging properly captured</criterion>
+                    <criterion>Clear separation between test and application logging</criterion>
+                </acceptanceCriteria>
+            </task>
+        </integrationTest>
+
+        <validation status="complete">
+            <task>
+                <name>Validate Changes</name>
+                <description>Comprehensive validation of logging implementation</description>
+                <steps>
+                    <step>Run all unit tests</step>
+                    <step>Run integration tests</step>
+                    <step>Verify log output locations</step>
+                    <step>Check for any stdout usage</step>
+                </steps>
+                <acceptanceCriteria>
+                    <criterion>All tests pass</criterion>
+                    <criterion>No logging to stdout</criterion>
+                    <criterion>Proper log separation maintained</criterion>
+                    <criterion>No loss of log information</criterion>
+                </acceptanceCriteria>
+            </task>
+        </validation>
+    </implementationTasks>
+</taskGenerationGuide>

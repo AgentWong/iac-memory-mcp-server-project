@@ -1,0 +1,1028 @@
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "undefined",
+            "path": [
+              "method"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "correlation_id",
+              "operation",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'correlation_id', 'operation', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "undefined",
+            "path": [
+              "method"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "correlation_id",
+              "operation",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'correlation_id', 'operation', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "undefined",
+            "path": [
+              "result"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "correlation_id",
+              "operation",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'correlation_id', 'operation', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "undefined",
+            "path": [
+              "error"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "correlation_id",
+              "operation",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'correlation_id', 'operation', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName'"
+          }
+        ],
+        "name": "ZodError"
+      }
+    ],
+    "path": [],
+    "message": "Invalid input"
+  }
+]
+    at get error (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/zod/lib/index.mjs:587:31)
+    at ZodUnion.parse (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/zod/lib/index.mjs:663:22)
+    at deserializeMessage (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js:26:33)
+    at ReadBuffer.readMessage (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js:19:16)
+    at StdioClientTransport.processReadBuffer (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/client/stdio.js:113:50)
+    at Socket.<anonymous> (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/client/stdio.js:92:22)
+    at Socket.emit (node:events:513:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  issues: [
+    {
+      code: 'invalid_union',
+      unionErrors: [Array],
+      path: [],
+      message: 'Invalid input'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      code: 'invalid_union',
+      unionErrors: [Array],
+      path: [],
+      message: 'Invalid input'
+    }
+  ]
+}
+Received message for sessionId bd7a71a8-f7aa-45ac-b489-47f8f6b107d1
+Received message for sessionId bd7a71a8-f7aa-45ac-b489-47f8f6b107d1
+Received message for sessionId bd7a71a8-f7aa-45ac-b489-47f8f6b107d1
+Received message for sessionId bd7a71a8-f7aa-45ac-b489-47f8f6b107d1
+ZodError: [
+  {
+    "code": "invalid_union",
+    "unionErrors": [
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "undefined",
+            "path": [
+              "method"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "undefined",
+            "path": [
+              "method"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "undefined",
+            "path": [
+              "result"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "undefined",
+            "path": [
+              "error"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName'"
+          }
+        ],
+        "name": "ZodError"
+      }
+    ],
+    "path": [],
+    "message": "Invalid input"
+  }
+]
+    at get error (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/zod/lib/index.mjs:587:31)
+    at ZodUnion.parse (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/zod/lib/index.mjs:663:22)
+    at deserializeMessage (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js:26:33)
+    at ReadBuffer.readMessage (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js:19:16)
+    at StdioClientTransport.processReadBuffer (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/client/stdio.js:113:50)
+    at Socket.<anonymous> (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/client/stdio.js:92:22)
+    at Socket.emit (node:events:513:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  issues: [
+    {
+      code: 'invalid_union',
+      unionErrors: [Array],
+      path: [],
+      message: 'Invalid input'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      code: 'invalid_union',
+      unionErrors: [Array],
+      path: [],
+      message: 'Invalid input'
+    }
+  ]
+}
+ZodError: [
+  {
+    "code": "invalid_union",
+    "unionErrors": [
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "undefined",
+            "path": [
+              "method"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "correlation_id",
+              "operation",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName",
+              "cancelled_task",
+              "duration"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'correlation_id', 'operation', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName', 'cancelled_task', 'duration'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_type",
+            "expected": "string",
+            "received": "undefined",
+            "path": [
+              "method"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "correlation_id",
+              "operation",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName",
+              "cancelled_task",
+              "duration"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'correlation_id', 'operation', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName', 'cancelled_task', 'duration'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "undefined",
+            "path": [
+              "result"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "correlation_id",
+              "operation",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName",
+              "cancelled_task",
+              "duration"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'correlation_id', 'operation', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName', 'cancelled_task', 'duration'"
+          }
+        ],
+        "name": "ZodError"
+      },
+      {
+        "issues": [
+          {
+            "code": "invalid_literal",
+            "expected": "2.0",
+            "path": [
+              "jsonrpc"
+            ],
+            "message": "Invalid literal value, expected \"2.0\""
+          },
+          {
+            "code": "invalid_union",
+            "unionErrors": [
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "string",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              },
+              {
+                "issues": [
+                  {
+                    "code": "invalid_type",
+                    "expected": "number",
+                    "received": "undefined",
+                    "path": [
+                      "id"
+                    ],
+                    "message": "Required"
+                  }
+                ],
+                "name": "ZodError"
+              }
+            ],
+            "path": [
+              "id"
+            ],
+            "message": "Invalid input"
+          },
+          {
+            "code": "invalid_type",
+            "expected": "object",
+            "received": "undefined",
+            "path": [
+              "error"
+            ],
+            "message": "Required"
+          },
+          {
+            "code": "unrecognized_keys",
+            "keys": [
+              "timestamp",
+              "level",
+              "message",
+              "logger",
+              "correlation_id",
+              "operation",
+              "levelno",
+              "pathname",
+              "filename",
+              "module",
+              "exc_text",
+              "lineno",
+              "funcName",
+              "msecs",
+              "relativeCreated",
+              "thread",
+              "threadName",
+              "processName",
+              "process",
+              "taskName",
+              "cancelled_task",
+              "duration"
+            ],
+            "path": [],
+            "message": "Unrecognized key(s) in object: 'timestamp', 'level', 'message', 'logger', 'correlation_id', 'operation', 'levelno', 'pathname', 'filename', 'module', 'exc_text', 'lineno', 'funcName', 'msecs', 'relativeCreated', 'thread', 'threadName', 'processName', 'process', 'taskName', 'cancelled_task', 'duration'"
+          }
+        ],
+        "name": "ZodError"
+      }
+    ],
+    "path": [],
+    "message": "Invalid input"
+  }
+]
+    at get error (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/zod/lib/index.mjs:587:31)
+    at ZodUnion.parse (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/zod/lib/index.mjs:663:22)
+    at deserializeMessage (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js:26:33)
+    at ReadBuffer.readMessage (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/shared/stdio.js:19:16)
+    at StdioClientTransport.processReadBuffer (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/client/stdio.js:113:50)
+    at Socket.<anonymous> (file:///home/herman/.npm/_npx/5a9d879542beca3a/node_modules/@modelcontextprotocol/sdk/dist/client/stdio.js:92:22)
+    at Socket.emit (node:events:513:28)
+    at addChunk (node:internal/streams/readable:559:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:510:3)
+    at Readable.push (node:internal/streams/readable:390:5) {
+  issues: [
+    {
+      code: 'invalid_union',
+      unionErrors: [Array],
+      path: [],
+      message: 'Invalid input'
+    }
+  ],
+  addIssue: [Function (anonymous)],
+  addIssues: [Function (anonymous)],
+  errors: [
+    {
+      code: 'invalid_union',
+      unionErrors: [Array],
+      path: [],
+      message: 'Invalid input'
+    }
+  ]
+}

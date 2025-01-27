@@ -1,0 +1,156 @@
+<queryToolsTasks>
+    <metadata>
+        <title>Query Tools Implementation Tasks</title>
+        <description>Task list for implementing query tools for the IaC Memory MCP Server</description>
+        <created>2025-01-20</created>
+        <version>1.0</version>
+    </metadata>
+
+    <terraformTasks>
+        <category name="Provider Queries">
+            <task id="TF-P-001" status="complete">
+                <name>Implement get_terraform_provider_info</name>
+                <description>Create tool to retrieve comprehensive provider information including version, documentation URLs, and source repository details</description>
+                <parameters>
+                    <parameter>provider_name: string</parameter>
+                    <returns>Provider metadata including version, URLs, and update timestamp</returns>
+                </parameters>
+                <priority>High</priority>
+            </task>
+
+            <task id="TF-P-002" status="complete">
+                <name>Implement list_terraform_providers</name>
+                <description>Create tool to list all cached Terraform providers with basic metadata</description>
+                <parameters>
+                    <parameter>filter_criteria: optional dict</parameter>
+                    <returns>List of provider summaries</returns>
+                </parameters>
+                <priority>Medium</priority>
+            </task>
+
+            <task id="TF-P-003" status="complete">
+                <name>Implement get_provider_version_history</name>
+                <description>Create tool to retrieve version history for a specific provider</description>
+                <parameters>
+                    <parameter>provider_name: string</parameter>
+                    <returns>Chronological list of version updates with timestamps</returns>
+                </parameters>
+                <priority>Medium</priority>
+            </task>
+        </category>
+
+        <category name="Resource Queries">
+            <task id="TF-R-001" status="complete">
+                <name>Implement get_terraform_resource_info</name>
+                <description>Create tool to retrieve comprehensive resource information including schema, documentation, and version details</description>
+                <parameters>
+                    <parameter>provider_name: string</parameter>
+                    <parameter>resource_name: string</parameter>
+                    <returns>Complete resource metadata and schema</returns>
+                </parameters>
+                <priority>High</priority>
+            </task>
+
+            <task id="TF-R-002" status="complete">
+                <name>Implement list_provider_resources</name>
+                <description>Create tool to list all resources associated with a specific provider</description>
+                <parameters>
+                    <parameter>provider_name: string</parameter>
+                    <parameter>filter_criteria: optional dict</parameter>
+                    <returns>List of resources with basic metadata</returns>
+                </parameters>
+                <priority>Medium</priority>
+            </task>
+
+            <task id="TF-R-003" status="complete">
+                <name>Implement get_resource_version_compatibility</name>
+                <description>Create tool to check resource compatibility across provider versions</description>
+                <parameters>
+                    <parameter>provider_name: string</parameter>
+                    <parameter>resource_name: string</parameter>
+                    <parameter>version: string</parameter>
+                    <returns>Compatibility status and potential issues</returns>
+                </parameters>
+                <priority>Medium</priority>
+            </task>
+        </category>
+    </terraformTasks>
+
+    <ansibleTasks>
+        <category name="Collection Queries">
+            <task id="ANS-C-001" status="complete">
+                <name>Implement get_ansible_collection_info</name>
+                <description>Create tool to retrieve comprehensive collection information including version, documentation URLs, and source repository details</description>
+                <parameters>
+                    <parameter>collection_name: string</parameter>
+                    <returns>Collection metadata including version, URLs, and update timestamp</returns>
+                </parameters>
+                <priority>High</priority>
+            </task>
+
+            <task id="ANS-C-002" status="complete">
+                <name>Implement list_ansible_collections</name>
+                <description>Create tool to list all cached Ansible collections with basic metadata</description>
+                <parameters>
+                    <parameter>filter_criteria: optional dict</parameter>
+                    <returns>List of collection summaries</returns>
+                </parameters>
+                <priority>Medium</priority>
+            </task>
+
+            <task id="ANS-C-003" status="complete">
+                <name>Implement get_collection_version_history</name>
+                <description>Create tool to retrieve version history for a specific collection</description>
+                <parameters>
+                    <parameter>collection_name: string</parameter>
+                    <returns>Chronological list of version updates with timestamps</returns>
+                </parameters>
+                <priority>Medium</priority>
+            </task>
+        </category>
+
+        <category name="Module Queries">
+            <task id="ANS-M-001" status="complete">
+                <name>Implement get_ansible_module_info</name>
+                <description>Create tool to retrieve comprehensive module information including schema, documentation, and version details</description>
+                <parameters>
+                    <parameter>collection_name: string</parameter>
+                    <parameter>module_name: string</parameter>
+                    <returns>Complete module metadata and schema</returns>
+                </parameters>
+                <priority>High</priority>
+            </task>
+
+            <task id="ANS-M-002" status="complete">
+                <name>Implement list_collection_modules</name>
+                <description>Create tool to list all modules associated with a specific collection</description>
+                <parameters>
+                    <parameter>collection_name: string</parameter>
+                    <parameter>filter_criteria: optional dict</parameter>
+                    <returns>List of modules with basic metadata</returns>
+                </parameters>
+                <priority>Medium</priority>
+            </task>
+
+            <task id="ANS-M-003" status="complete">
+                <name>Implement get_module_version_compatibility</name>
+                <description>Create tool to check module compatibility across collection versions</description>
+                <parameters>
+                    <parameter>collection_name: string</parameter>
+                    <parameter>module_name: string</parameter>
+                    <parameter>version: string</parameter>
+                    <returns>Compatibility status and potential issues</returns>
+                </parameters>
+                <priority>Medium</priority>
+            </task>
+        </category>
+    </ansibleTasks>
+
+    <implementationNotes>
+        <note>All query tools should follow consistent error handling patterns</note>
+        <note>Include appropriate documentation strings for each tool</note>
+        <note>Implement proper input validation for all parameters</note>
+        <note>Return structured data in a consistent format across all tools</note>
+        <note>Include timestamp of last cache update in all responses</note>
+    </implementationNotes>
+</queryToolsTasks>

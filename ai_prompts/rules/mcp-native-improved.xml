@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Part 1: Start to end of redundancyPrevention section -->
+<mcpNativeRules>
+    <metadata>
+        <title>MCP Native Type Usage Rules</title>
+        <version>1.1</version>
+        <description>Rules to prevent redundant code by leveraging native MCP types and functionality</description>
+    </metadata>
+    <redundancyPrevention>
+        <rule id="single-handler-implementation">
+            <description>Each MCP handler must have exactly one implementation</description>
+            <violations>
+                <pattern>Multiple functions implementing same handler logic</pattern>
+                <pattern>Separate internal/external handler versions</pattern>
+                <pattern>Wrapper functions that only delegate</pattern>
+                <pattern>Module-level and class-level handler duplicates</pattern>
+                <pattern>Test-specific handler implementations</pattern>
+            </violations>
+            <correctExample>
+                <description>Single decorated handler implementation</description>
+                <code>
+                    @server.list_resources()
+                    async def handle_list_resources(ctx: Context) -> list[types.Resource]:
+                        """List available resources with proper context."""
+                        await ctx.session.report_progress(0, 3)
+                        resources = await get_resources()
+                        await ctx.session.report_progress(3, 3)
+                        return resources
+                </code>
+            </correctExample>
+            <incorrectExample>
+                <description>Redundant implementations</description>
+                <code>
+                    # BAD: Duplicate implementations
+                    async def _internal_list_resources():
+                        # Implementation
+                    
+                    @server.list_resources()
+                    async def handle_list_resources():
+                        return await _internal_list_resources()
+                        
+                    # Test version
+                    async def test_list_resources():
+                        return await _internal_list_resources()
+                </code>
+            </incorrectExample>
+        </rule>
+        <rule id="error-handling-patterns">
+            <description>Use consistent error handling patterns across all handlers</description>
+            <violations>
+                <pattern>Inconsistent error type usage</pattern>
+                <pattern>Missing error context information</pattern>
+                <pattern>Direct exception raising without proper MCP error types</pattern>
+                <pattern>Mixing error handling styles</pattern>
+            </violations>
+            <correctExample>
+                <description>Proper MCP error handling</description>
+                <code>
+                    try:
+                        result = await perform_operation()
+                        return result
+                    except ResourceNotFoundError as e:
+                        raise McpError(
+                            ErrorData(
+                                code=types.METHOD_NOT_FOUND,
+                                message=str(e),
+                                data={"resource_id": e.resource_id}
+                            )
+                        )
+                    except OperationError as e:
+                        raise McpError(
+                            ErrorData(
+                                code=types.INTERNAL_ERROR,
+                                message="Operation failed",
+                                data={"error": str(e)}
+                            )
+                        )
+                </code>
+            </correctExample>
+            <incorrectExample>
+                <description>Inconsistent error handling</description>
+                <code>
+                    # BAD: Mixed error handling styles
+                    try:
+                        result = await perform_operation()
+                        return result
+                    except Exception as e:
+                        raise Exception("Operation failed")  # Missing proper error type
+                </code>
+            </incorrectExample>
+            <requirements>
+                <requirement>Use McpError for all protocol-level errors</requirement>
+                <requirement>Include relevant context in error data</requirement>
+                <requirement>Use standard error codes from types module</requirement>
+                <requirement>Provide clear error messages</requirement>
+            </requirements>
+        </rule>
+        <rule id="async-await-consistency">
+            <description>Use consistent async/await patterns throughout the codebase</description>
+            <violations>
+                <pattern>Mixing sync and async code inappropriately</pattern>
+                <pattern>Missing await statements</pattern>
+                <pattern>Improper async context management</pattern>
+                <pattern>Blocking operations in async code</pattern>
+            </violations>
+            <correctExample>
+                <description>Proper async/await usage</description>
+                <code>
+                    async with ClientSession(read_stream, write_stream) as session:
+                        await session.initialize()
+                        async for message in session.incoming_messages:
+                            await process_message(message)
+                </code>
+            </correctExample>
+            <incorrectExample>
+                <description>Incorrect async usage</description>
+                <code>
+                    # BAD: Missing async context management
+                    session = ClientSession(read_stream, write_stream)
+                    session.initialize()  # Missing await
+                    for message in session.incoming_messages:  # Should be async for
+                        process_message(message)  # Missing await
+                </code>
+            </incorrectExample>
+            <requirements>
+                <requirement>Use async/await consistently for all I/O operations</requirement>
+                <requirement>Proper async context manager usage</requirement>
+                <requirement>Async for loops when iterating over streams</requirement>
+                <requirement>No blocking operations in async code</requirement>
+            </requirements>
+        </rule>
+        <rule id="type-safety">
+            <description>Maintain strong typing throughout the codebase</description>
+            <violations>
+                <pattern>Missing type hints</pattern>
+                <pattern>Improper generic usage</pattern>
+                <pattern>Any types without justification</pattern>
+                <pattern>Inconsistent type usage</pattern>
+            </violations>
+            <correctExample>
+                <description>Proper type hints and generics</description>
+                <code>
+                    class ServerSession(
+                        BaseSession[
+                            types.ServerRequest,
+                            types.ServerNotification,
+                            types.ServerResult,
+                            types.ClientRequest,
+                            types.ClientNotification,
+                        ]
+                    ):
+                        async def handle_request(
+                            self,
+                            request: types.ClientRequest
+                        ) -> types.ServerResult:
+                            ...
+                </code>
+            </correctExample>
+            <incorrectExample>
+                <description>Poor type safety</description>
+                <code>
+                    # BAD: Missing or improper type hints
+                    class ServerSession(BaseSession):  # Missing type params
+                        async def handle_request(self, request):  # Missing type hints
+                            ...
+                </code>
+            </incorrectExample>
+            <requirements>
+                <requirement>Complete type hints for all functions</requirement>
+                <requirement>Proper generic type parameters</requirement>
+                <requirement>Clear type bounds and constraints</requirement>
+                <requirement>Type consistency across interfaces</requirement>
+            </requirements>
+        </rule>
+        <rule id="progress-reporting">
+            <description>Implement consistent progress reporting patterns</description>
+            <violations>
+                <pattern>Inconsistent progress steps</pattern>
+                <pattern>Missing progress updates</pattern>
+                <pattern>Incorrect progress calculations</pattern>
+                <pattern>Progress reporting outside session context</pattern>
+            </violations>
+            <correctExample>
+                <description>Standard progress reporting</description>
+                <code>
+                    @server.list_resources()
+                    async def handle_list_resources() -> list[types.Resource]:
+                        await ctx.session.report_progress(0, 3)  # Start
+                        
+                        # First step
+                        await ctx.session.report_progress(1, 3)
+                        resources = await fetch_resources()
+                        
+                        # Second step
+                        await ctx.session.report_progress(2, 3)
+                        processed = await process_resources(resources)
+                        
+                        # Completion
+                        await ctx.session.report_progress(3, 3)
+                        return processed
+                </code>
+            </correctExample>
+            <incorrectExample>
+                <description>Incorrect progress reporting</description>
+                <code>
+                    # BAD: Inconsistent progress
+                    async def handle_resources():
+                        await report_progress(0, 100)  # Wrong scale
+                        resources = await fetch_resources()
+                        # Missing intermediate updates
+                        return resources
+                </code>
+            </incorrectExample>
+            <requirements>
+                <requirement>Use consistent 3-step progress reporting</requirement>
+                <requirement>Always start at 0 and end at total</requirement>
+                <requirement>Report intermediate progress appropriately</requirement>
+                <requirement>Use session context for progress updates</requirement>
+            </requirements>
+        </rule>
+    </redundancyPrevention>
+    <typeUsage>
+        <rule id="use-native-types">
+            <description>Use native MCP types directly instead of manual construction</description>
+            <violations>
+                <pattern>Manual construction of Resource objects</pattern>
+                <pattern>Custom Message object creation</pattern>
+                <pattern>Redundant type conversion</pattern>
+                <pattern>Duplicate type definitions</pattern>
+                <pattern>Custom wrappers around MCP types</pattern>
+                <pattern>Reimplementing MCP protocol types</pattern>
+                <pattern>Custom serialization of MCP types</pattern>
+                <pattern>Manual validation of MCP fields</pattern>
+                <pattern>Custom type checking for MCP objects</pattern>
+            </violations>
+            <correctExamples>
+                <example>
+                    <description>Use native MCP types</description>
+                    <code>from mcp.types import TextContent, PromptMessage</code>
+                    <code>message = PromptMessage(role="user", content=TextContent(type="text", text=message))</code>
+                </example>
+                <example>
+                    <description>Let pydantic handle validation</description>
+                    <code>from mcp.types import Resource</code>
+                    <code>resource = Resource(name="example", uri="resource://path", mimeType="text/plain")</code>
+                </example>
+                <example>
+                    <description>Use native context capabilities</description>
+                    <code>from mcp.shared.context import RequestContext</code>
+                    <code>ctx = RequestContext(request_id=request_id, meta=meta, session=session)</code>
+                </example>
+            </correctExamples>
+            <incorrectExamples>
+                <example>
+                    <description>Manual message construction</description>
+                    <code>{"role": "user", "content": {"type": "text", "text": message}}</code>
+                </example>
+                <example>
+                    <description>Custom context implementation</description>
+                    <code>
+                        class CustomContext:  # Don't do this!
+                            def __init__(self):
+                                self.progress = []
+                                self.messages = []
+                    </code>
+                </example>
+                <example>
+                    <description>Manual type validation</description>
+                    <code>
+                        def validate_resource(data):  # Don't do this!
+                            if not isinstance(data.get("uri"), str):
+                                raise ValueError("Invalid URI")
+                    </code>
+                </example>
+            </incorrectExamples>
+        </rule>
+    </typeUsage>
+    <sessionUsage>
+        <rule id="proper-session-inheritance">
+            <description>Use correct session base classes and imports</description>
+            <violations>
+                <pattern>Importing session classes from wrong modules</pattern>
+                <pattern>Incorrect inheritance hierarchy</pattern>
+                <pattern>Missing type parameters</pattern>
+                <pattern>Custom session implementations without proper base</pattern>
+            </violations>
+            <correctExamples>
+                <example>
+                    <description>Base session usage</description>
+                    <code>from mcp.shared.session import BaseSession</code>
+                    <code>
+                        class CustomSession(BaseSession[SendRequestT, SendNotificationT, 
+                                                      SendResultT, ReceiveRequestT, 
+                                                      ReceiveNotificationT]):
+                            pass
+                    </code>
+                </example>
+                <example>
+                    <description>Server session usage</description>
+                    <code>from mcp.server.session import ServerSession</code>
+                    <code>
+                        session = ServerSession(
+                            read_stream=read_stream,
+                            write_stream=write_stream,
+                            init_options=initialization_options
+                        )
+                    </code>
+                </example>
+            </correctExamples>
+            <incorrectExamples>
+                <example>
+                    <description>Wrong imports</description>
+                    <code>from mcp.types import BaseSession  # WRONG</code>
+                    <code>from mcp.server import Session  # WRONG</code>
+                </example>
+            </incorrectExamples>
+        </rule>
+        <rule id="session-initialization">
+            <description>Initialize sessions with proper streams and options</description>
+            <requirements>
+                <requirement>
+                    <name>Stream Parameters</name>
+                    <items>
+                        <item>read_stream: MemoryObjectReceiveStream[JSONRPCMessage | Exception]</item>
+                        <item>write_stream: MemoryObjectSendStream[JSONRPCMessage]</item>
+                    </items>
+                </requirement>
+                <requirement>
+                    <name>Server Session Options</name>
+                    <items>
+                        <item>init_options: InitializationOptions</item>
+                    </items>
+                </requirement>
+                <requirement>
+                    <name>Context Management</name>
+                    <items>
+                        <item>Use async with for session lifecycle</item>
+                        <item>Initialize client sessions explicitly</item>
+                    </items>
+                </requirement>
+            </requirements>
+            <correctExamples>
+                <example>
+                    <description>Server session initialization</description>
+                    <code>
+                        async with ServerSession(read_stream, write_stream, init_options) as session:
+                            await session.handle_requests()
+                    </code>
+                </example>
+                <example>
+                    <description>Client session initialization</description>
+                    <code>
+                        async with ClientSession(read_stream, write_stream) as session:
+                            await session.initialize()
+                            result = await session.list_resources()
+                    </code>
+                </example>
+            </correctExamples>
+            <incorrectExamples>
+                <example>
+                    <description>Missing context manager</description>
+                    <code>
+                        session = ServerSession(read_stream, write_stream, init_options)
+                        await session.handle_requests()  # WRONG - no context management
+                    </code>
+                </example>
+            </incorrectExamples>
+        </rule>
+    </sessionUsage>
+    <testingGuidelines>
+        <rule id="integration-testing">
+            <description>Use proper integration testing patterns</description>
+            <requirements>
+                <requirement>Use stdio_client for server testing</requirement>
+                <requirement>Proper session initialization in tests</requirement>
+                <requirement>Complete handler testing coverage</requirement>
+                <requirement>Error scenario testing</requirement>
+            </requirements>
+            <correctExample>
+                <description>Proper integration test</description>
+                <code>
+                    async def test_server_integration():
+                        async with stdio_client(server_params) as (read, write):
+                            async with ClientSession(read, write) as session:
+                                await session.initialize()
+                                
+                                # Test normal operation
+                                result = await session.list_resources()
+                                assert len(result.resources) > 0
+                                
+                                # Test error handling
+                                with pytest.raises(McpError) as exc_info:
+                                    await session.read_resource("invalid://uri")
+                                assert exc_info.value.error.code == types.INVALID_REQUEST
+                </code>
+            </correctExample>
+        </rule>
+    </testingGuidelines>
+    <documentation>
+        <reference>
+            <title>MCP Native Usage Guide</title>
+            <points>
+                <point>Use native MCP types whenever possible</point>
+                <point>Let pydantic handle validation</point>
+                <point>Use server decorators for registration</point>
+                <point>Leverage Context object capabilities</point>
+                <point>Maintain consistent error handling</point>
+                <point>Ensure proper async/await usage</point>
+                <point>Implement strong typing</point>
+                <point>Follow standard progress reporting patterns</point>
+                <point>Use proper testing methodologies</point>
+            </points>
+        </reference>
+    </documentation>
+</mcpNativeRules>

@@ -1,0 +1,137 @@
+============================= test session starts ==============================
+platform linux -- Python 3.13.1, pytest-8.3.4, pluggy-1.5.0 -- /home/herman/Documents/vscode/iac-memory-mcp-server/.venv/bin/python
+cachedir: .pytest_cache
+rootdir: /home/herman/Documents/vscode/iac-memory-mcp-server
+configfile: pytest.ini
+plugins: timeout-2.3.1, asyncio-0.23.8, anyio-4.8.0
+timeout: 60.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.STRICT
+collecting ... collected 34 items
+
+src/tests/test_context.py::test_info_messages PASSED                     [  2%]
+src/tests/test_context.py::test_error_handling PASSED                    [  5%]
+src/tests/test_database_methods.py::test_add_terraform_provider PASSED   [  8%]
+src/tests/test_database_methods.py::test_get_provider_resources PASSED   [ 11%]
+src/tests/test_database_methods.py::test_update_provider_version PASSED  [ 14%]
+src/tests/test_database_methods.py::test_add_terraform_resource PASSED   [ 17%]
+src/tests/test_database_methods.py::test_get_resource_info PASSED        [ 20%]
+src/tests/test_database_methods.py::test_update_resource_schema PASSED   [ 23%]
+src/tests/test_database_methods.py::test_add_ansible_collection PASSED   [ 26%]
+src/tests/test_database_methods.py::test_get_collection_modules PASSED   [ 29%]
+src/tests/test_database_methods.py::test_update_collection_version PASSED [ 32%]
+src/tests/test_database_methods.py::test_add_ansible_module PASSED       [ 35%]
+src/tests/test_database_methods.py::test_get_module_info PASSED          [ 38%]
+src/tests/test_database_methods.py::test_update_module_version PASSED    [ 41%]
+src/tests/test_performance.py::test_terraform_provider_operations PASSED [ 44%]
+src/tests/test_performance.py::test_ansible_collection_operations PASSED [ 47%]
+src/tests/test_unit.py::test_database_initialization PASSED              [ 50%]
+src/tests/test_unit.py::test_database_connection_context PASSED          [ 52%]
+src/tests/test_unit.py::test_database_error_handling PASSED              [ 55%]
+src/tests/test_unit.py::test_list_resources_handler PASSED               [ 58%]
+src/tests/test_unit.py::test_read_resource_handler PASSED                [ 61%]
+src/tests/test_unit.py::test_create_entity_tool PASSED                   [ 64%]
+src/tests/test_unit.py::test_tool_error_handling PASSED                  [ 67%]
+src/tests/test_mcp_compliance.py::test_mcp_uri_compliance PASSED         [ 70%]
+src/tests/test_mcp_compliance.py::test_mcp_tool_compliance PASSED        [ 73%]
+src/tests/test_mcp_compliance.py::test_mcp_error_compliance PASSED       [ 76%]
+src/tests/test_mcp_compliance.py::test_mcp_logging_compliance PASSED     [ 79%]
+src/tests/test_mcp_logging.py::test_mcp_logging_format PASSED            [ 82%]
+src/tests/test_mcp_logging.py::test_mcp_error_logging PASSED             [ 85%]
+src/tests/test_mcp_logging.py::test_mcp_context_logging FAILED           [ 88%]
+src/tests/test_resource_templates.py::test_list_resource_templates PASSED [ 91%]
+src/tests/test_resource_templates.py::test_template_variable_extraction PASSED [ 94%]
+src/tests/test_resource_templates.py::test_template_resource_access PASSED [ 97%]
+src/tests/test_resource_templates.py::test_template_error_handling PASSED [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_mcp_context_logging ___________________________
+
+    @pytest.mark.asyncio
+    async def test_mcp_context_logging():
+        """Test logging context propagation."""
+        async with db_test_context(operation_name="context_logging") as ctx:
+            async with capture_taskgroup_errors():
+                await ctx.info("Starting context logging test")
+    
+                # Add test data
+                db = DatabaseManager.get_instance()
+                db.add_terraform_provider(
+                    "aws",
+                    "4.0.0",
+                    "https://github.com/hashicorp/terraform-provider-aws",
+                    "https://registry.terraform.io/providers/hashicorp/aws/latest/docs",
+                )
+    
+                # Verify operation name propagation
+                for msg in ctx.info_messages:
+                    assert "context_logging" in msg, "Operation name not propagated"
+    
+                # Wait briefly for logs to propagate
+                await asyncio.sleep(0.1)
+    
+                # Verify database operation logging
+                db_logs = [
+                    msg
+                    for msg in ctx.info_messages
+                    if any(x in msg.lower() for x in ["provider", "terraform"])
+                ]
+>               assert len(db_logs) > 0, "Database operations not logged"
+E               AssertionError: Database operations not logged
+E               assert 0 > 0
+E                +  where 0 = len([])
+
+src/tests/test_mcp_logging.py:100: AssertionError
+
+The above exception was the direct cause of the following exception:
+
+    @pytest.mark.asyncio
+    async def test_mcp_context_logging():
+        """Test logging context propagation."""
+>       async with db_test_context(operation_name="context_logging") as ctx:
+
+src/tests/test_mcp_logging.py:74: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.13/contextlib.py:235: in __aexit__
+    await self.gen.athrow(value)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+operation_name = 'context_logging', timeout_seconds = 5.0
+
+    @asynccontextmanager
+    async def db_test_context(
+        operation_name: str = "test", timeout_seconds: float = 5.0
+    ) -> AsyncGenerator[DbTestContext, None]:
+        """Context manager for database testing.
+    
+        Args:
+            operation_name: Name of the test operation
+            timeout_seconds: Maximum time to wait for operations
+    
+        Raises:
+            TimeoutError: If operations exceed timeout
+            DatabaseTestError: For database-specific errors
+        """
+        ctx = DbTestContext(operation_name)
+    
+        try:
+            async with asyncio.timeout(timeout_seconds):
+                yield ctx
+        except asyncio.TimeoutError as e:
+            raise TimeoutError(f"Database test timeout after {timeout_seconds}s") from e
+        except Exception as e:
+            if isinstance(e, AssertionError):
+>               raise DatabaseTestError(str(e)) from e
+E               tests.test_utils.exceptions.DatabaseTestError: Database operations not logged
+E               assert 0 > 0
+E                +  where 0 = len([])
+
+src/tests/test_utils/db_utils.py:121: DatabaseTestError
+------------------------------ Captured log call -------------------------------
+INFO     db_test.context_logging:db_utils.py:74 2025-01-19 16:26:02 - INFO - [context_logging] Starting context logging test
+=========================== short test summary info ============================
+FAILED src/tests/test_mcp_logging.py::test_mcp_context_logging - tests.test_utils.exceptions.DatabaseTestError: Database operations not logged
+assert 0 > 0
+ +  where 0 = len([])
+========================= 1 failed, 33 passed in 0.52s =========================

@@ -1,0 +1,14 @@
+# Log reused chat prompts in this file
+
+# Reused (to enforce rules and focus on tasks, append to each chat response to Claude)
+
+".prompts/docs" contains official Python MCP SDK documentation.  Follow XML rules in ".prompts/rules" when editing code.  ".prompts/docs/project-design-goals.md" contains this project's original design goals.  ".prompts/tasks/tasks.xml" contains your task list, update your progress in this file for each item by changing status = "incomplete" to status = "complete" as you complete EACH INDIVIDUAL item. 
+
+# Short
+Reference ".prompts/tasks/tasks.xml" to identify recently implemented changes that may have broken tests, the changes were intentional so assume it's more likely that it's the tests that need fixes .  ".prompts/docs" contains official Python MCP SDK documentation.  Follow XML rules in ".prompts/rules" when editing code.  ".prompts/docs/project-design-goals.md" contains this project's original design goals.
+
+PAY SPECIAL ATTENTION to ".prompts/rules/testing-rules.xml" rule id "test-context-implementation" AND ".prompts/rules/context-session-handling.xml" before making ANY changes to "TestContext".  ".prompts/docs/project-design-goals.md" contains this project's original design goals.  Be sure to check ".prompts/rules/mcp-native-improved.xml" to ensure you are not reinventing the wheel (writing extra code to do what the MCP module already provides).
+
+
+# Loop Break
+Review ".prompts/log/aider_chat_log.txt" for a log of the last several iterations.  Carefully check if you are stuck in a loop (adding code in 1 iteration, removing the same code in another iteration, then repeating).  ".prompts/docs" contains official Python MCP SDK documentation.  Follow XML rules in ".prompts/rules" when editing code.  ".prompts/docs/project-design-goals.md" contains this project's original design goals.

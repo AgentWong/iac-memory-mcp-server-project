@@ -1,0 +1,29 @@
+@contextmanager
+async def create_transport(
+    read_stream: MemoryObjectReceiveStream[JSONRPCMessage | Exception],
+    write_stream: MemoryObjectSendStream[JSONRPCMessage]
+):
+    """
+    Transport interface for MCP.
+
+    Args:
+        read_stream: Stream to read incoming messages from
+        write_stream: Stream to write outgoing messages to
+    """
+    async with anyio.create_task_group() as tg:
+        try:
+            # Start processing messages
+            tg.start_soon(lambda: process_messages(read_stream))
+
+            # Send messages
+            async with write_stream:
+                yield write_stream
+
+        except Exception as exc:
+            # Handle errors
+            raise exc
+        finally:
+            # Clean up
+            tg.cancel_scope.cancel()
+            await write_stream.aclose()
+            await read_stream.aclose()

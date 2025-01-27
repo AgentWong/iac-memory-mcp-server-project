@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mcpContextRules>
+    <metadata>
+        <title>MCP Context-Session Handling Rules</title>
+        <version>1.0</version>
+        <description>Rules governing the proper implementation and usage of Context and Session objects in the Model Context Protocol</description>
+    </metadata>
+
+    <contextDefinition>
+        <rule id="request-context-source">
+            <description>RequestContext must be imported from mcp.shared.context</description>
+            <violations>
+                <pattern>Importing RequestContext from wrong module</pattern>
+                <pattern>Custom RequestContext implementations</pattern>
+                <pattern>Using dict or custom objects for request context</pattern>
+            </violations>
+            <correctExample>
+                <code>from mcp.shared.context import RequestContext</code>
+            </correctExample>
+            <incorrectExample>
+                <code>from mcp.server.lowlevel.server import RequestContext  # WRONG</code>
+                <code>from mcp.types import RequestContext  # WRONG</code>
+            </incorrectExample>
+            <requirements>
+                <requirement>Import RequestContext from mcp.shared.context only</requirement>
+                <requirement>Use all required fields: request_id, meta, session</requirement>
+                <requirement>Never create custom RequestContext implementations</requirement>
+                <requirement>Use request_ctx.set() and request_ctx.reset() for context management</requirement>
+            </requirements>
+            <rationale>
+                The mcp.shared.context.RequestContext:
+                - Ensures proper type validation
+                - Maintains protocol compliance
+                - Handles all required context attributes
+                - Integrates with MCP session handling
+                - Provides proper context lifecycle management
+            </rationale>
+        </rule>
+
+        <rule id="minimal-context">
+            <description>RequestContext must remain minimal with only essential attributes</description>
+            <attributes>
+                <attribute>
+                    <name>request_id</name>
+                    <type>RequestId</type>
+                    <description>Unique identifier for the request</description>
+                </attribute>
+                <attribute>
+                    <name>meta</name>
+                    <type>RequestParams.Meta | None</type>
+                    <description>Optional request metadata</description>
+                </attribute>
+                <attribute>
+                    <name>session</name>
+                    <type>SessionT</type>
+                    <description>Reference to the communication session</description>
+                </attribute>
+            </attributes>
+            <violations>
+                <pattern>Adding progress tracking to context</pattern>
+                <pattern>Adding message storage to context</pattern>
+                <pattern>Adding state management to context</pattern>
+                <pattern>Extending context with additional methods</pattern>
+            </violations>
+        </rule>
+
+        <rule id="session-delegation">
+            <description>All operations must be delegated to the session</description>
+            <operations>
+                <operation>
+                    <name>Progress Reporting</name>
+                    <correct>await ctx.session.report_progress(current, total)</correct>
+                    <incorrect>ctx.progress.append((current, total))</incorrect>
+                </operation>
+                <operation>
+                    <name>Information Messages</name>
+                    <correct>await ctx.session.info(message)</correct>
+                    <incorrect>ctx.info_messages.append(message)</incorrect>
+                </operation>
+                <operation>
+                    <name>State Tracking</name>
+                    <correct>await ctx.session.update_state(state)</correct>
+                    <incorrect>ctx.state = new_state</incorrect>
+                </operation>
+            </operations>
+            <principles>
+                <principle>Context should never store operational data</principle>
+                <principle>All state changes must go through session</principle>
+                <principle>Context provides access to session only</principle>
+                <principle>Session handles all protocol operations</principle>
+            </principles>
+        </rule>
+    </contextDefinition>
+
+    <testContextImplementation>
+        <rule id="test-context-structure">
+            <description>Test contexts must properly simulate MCP Context behavior</description>
+            <requirements>
+                <requirement>
+                    <name>Proper Session Integration</name>
+                    <description>Test contexts must use a proper test session implementation</description>
+                    <implementation>
+                        <code>
+                            class TestContext:
+                                def __init__(self, operation_name: str = "test"):
+                                    self.request_id = f"test-{int(time.time())}"
+                                    self.meta = RequestParams.Meta(...)
+                                    self.session = TestSession()
+                        </code>
+                    </implementation>
+                </requirement>
+                <requirement>
+                    <name>Operation Delegation</name>
+                    <description>All operations must be delegated to the test session</description>
+                    <implementation>
+                        <code>
+                            async def report_progress(self, current: int, total: int):
+                                await self.session.report_progress(current, total)
+                                
+                            async def info(self, message: str):
+                                await self.session.info(message)
+                        </code>
+                    </implementation>
+                </requirement>
+            </requirements>
+            <violations>
+                <violation>
+                    <description>Direct state manipulation in test context</description>
+                    <code>
+                        class TestContext:  # WRONG
+                            def __init__(self):
+                                self.progress = []
+                                self.messages = []
+                    </code>
+                </violation>
+            </violations>
+        </rule>
+
+        <rule id="test-session-implementation">
+            <description>Test sessions must properly implement MCP session capabilities</description>
+            <requirements>
+                <requirement>Use proper type parameters from mcp.types</requirement>
+                <requirement>Initialize streams correctly</requirement>
+                <requirement>Implement required abstract methods</requirement>
+                <requirement>Handle message processing properly</requirement>
+            </requirements>
+            <correctExample>
+                <code>
+                    class TestSession(BaseSession[ClientRequest, ClientNotification, 
+                                               ClientResult, ServerRequest, 
+                                               ServerNotification]):
+                        def __init__(self):
+                            read_stream, write_stream = create_memory_streams()
+                            super().__init__(read_stream, write_stream,
+                                           ServerRequest, ServerNotification)
+                            
+                        async def _received_request(self, responder):
+                            await super()._received_request(responder)
+                            
+                        async def _received_notification(self, notification):
+                            await super()._received_notification(notification)
+                </code>
+            </correctExample>
+            <incorrectExample>
+                <code>
+                    class TestSession:  # WRONG
+                        def __init__(self):
+                            self.messages = []
+                        
+                        async def send_message(self, msg):
+                            self.messages.append(msg)
+                </code>
+            </incorrectExample>
+        </rule>
+    </testContextImplementation>
+
+    <contextLifecycle>
+        <rule id="context-management">
+            <description>Proper context lifecycle management</description>
+            <stages>
+                <stage>
+                    <name>Creation</name>
+                    <code>
+                        ctx = RequestContext(
+                            request_id=request_id,
+                            meta=meta,
+                            session=session
+                        )
+                    </code>
+                </stage>
+                <stage>
+                    <name>Registration</name>
+                    <code>token = request_ctx.set(ctx)</code>
+                </stage>
+                <stage>
+                    <name>Usage</name>
+                    <code>
+                        current_ctx = request_ctx.get()
+                        await current_ctx.session.report_progress(1, 3)
+                    </code>
+                </stage>
+                <stage>
+                    <name>Cleanup</name>
+                    <code>request_ctx.reset(token)</code>
+                </stage>
+            </stages>
+            <requirements>
+                <requirement>Always use context manager for lifecycle</requirement>
+                <requirement>Properly clean up context when done</requirement>
+                <requirement>Handle errors appropriately</requirement>
+                <requirement>Ensure token storage and reset</requirement>
+            </requirements>
+        </rule>
+    </contextLifecycle>
+
+    <errorHandling>
+        <rule id="context-error-handling">
+            <description>Proper error handling in context operations</description>
+            <scenarios>
+                <scenario>
+                    <name>Missing Context</name>
+                    <handling>
+                        <code>
+                            try:
+                                ctx = request_ctx.get()
+                            except LookupError:
+                                raise RuntimeError("No active request context")
+                        </code>
+                    </handling>
+                </scenario>
+                <scenario>
+                    <name>Operation Failure</name>
+                    <handling>
+                        <code>
+                            try:
+                                await ctx.session.report_progress(current, total)
+                            except Exception as e:
+                                await ctx.session.error(f"Operation failed: {e}")
+                                raise
+                        </code>
+                    </handling>
+                </scenario>
+            </scenarios>
+        </rule>
+    </errorHandling>
+
+    <bestPractices>
+        <practice>
+            <name>Context Access</name>
+            <description>Always access context through request_ctx.get()</description>
+            <example>
+                <code>
+                    async def handle_request():
+                        ctx = request_ctx.get()
+                        await ctx.session.report_progress(0, 3)
+                </code>
+            </example>
+        </practice>
+
+        <practice>
+            <name>Session Delegation</name>
+            <description>Delegate all operations to session</description>
+            <example>
+                <code>
+                    async def process_data():
+                        ctx = request_ctx.get()
+                        await ctx.session.info("Processing started")
+                        await ctx.session.report_progress(1, 3)
+                </code>
+            </example>
+        </practice>
+
+        <practice>
+            <name>Error Propagation</name>
+            <description>Properly handle and propagate errors</description>
+            <example>
+                <code>
+                    try:
+                        await operation()
+                    except Exception as e:
+                        ctx = request_ctx.get()
+                        await ctx.session.error(str(e))
+                        raise
+                </code>
+            </example>
+        </practice>
+
+        <practice>
+            <name>Testing Context</name>
+            <description>Use proper test context setup</description>
+            <example>
+                <code>
+                    @asynccontextmanager
+                    async def test_context():
+                        ctx = TestContext()
+                        token = request_ctx.set(ctx)
+                        try:
+                            yield ctx
+                        finally:
+                            request_ctx.reset(token)
+                </code>
+            </example>
+        </practice>
+    </bestPractices>
+</mcpContextRules>

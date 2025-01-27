@@ -1,0 +1,35 @@
+# Create venv
+python -m venv .venv
+
+# Activate venv 
+source .venv/bin/activate
+
+# Deactivate
+deactivate
+
+# Install dev tools
+pip install -e ".[dev]"
+
+# Black formatter
+.venv/bin/black .
+
+# Run ruff checks
+.venv/bin/ruff check --fix
+
+# pytest
+# CI=true is used to direct pytest not to truncate output
+CI=true .venv/bin/python -m pytest -v
+
+# Unit tests
+CI=true .venv/bin/python -m pytest src/tests/test_context.py src/tests/test_database_methods.py src/tests/test_performance.py src/tests/test_unit.py src/tests/test_mcp_compliance.py src/tests/test_mcp_logging.py src/tests/test_resource_templates.py -v
+
+# Integration Test
+CI=true .venv/bin/python -m pytest src/tests/test_integration.py --log-cli-level=DEBUG -v
+
+CI=true .venv/bin/python -m pytest src/tests/test_integration.py --log-cli-level=DEBUG -v > ai_prompts/log/pytest_log.txt 2>&1
+
+# Simple client test
+.venv/bin/python src/tests/test_simple_mcp_client.py
+
+# MCP inspector
+npx @modelcontextprotocol/inspector uv --directory . run python -m iac_memory_mcp_server

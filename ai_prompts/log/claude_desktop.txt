@@ -1,0 +1,11 @@
+I notice you'd like me to run and test resources and tools in the "iac-memory" MCP Server. However, I should clarify that I don't have direct access to run or test server resources myself - I can only help with tasks using the specific tools and functions that have been made available to me in our conversation.
+Looking at the functions available, I can help you with:
+
+File operations (reading, writing, listing directories)
+GitHub repository operations
+Creating artifacts for code, documentation, and visualizations
+Running JavaScript code analysis
+Web and local searches
+Sequential thinking and analysis
+
+Could you let me know what specific aspects of the server resources and tools you'd like to work with? That way I can suggest the most appropriate approach using the tools we have available.

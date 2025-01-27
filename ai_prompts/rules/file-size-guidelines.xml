@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<fileSizeGuidelines>
+    <sizeConstraints>
+        <hardLimits>
+            <maximumFileSize>250 lines of code (strict limit)</maximumFileSize>
+            <minimumRecommendedSize>100 lines of code</minimumRecommendedSize>
+            <targetRange>100-250 lines per file</targetRange>
+        </hardLimits>
+        
+        <exceptionsToMinimumSize>
+            <exception>Configuration files (e.g., settings.py)</exception>
+            <exception>Package initialization files (__init__.py)</exception>
+            <exception>Interface definitions (e.g., abstract base classes)</exception>
+            <exception>Simple utility scripts with a single, focused purpose</exception>
+            <exception>Type definition files (e.g., custom types and dataclasses)</exception>
+        </exceptionsToMinimumSize>
+    </sizeConstraints>
+
+    <fileConsolidationGuidelines>
+        <whenToConsolidate>
+            <condition>Files have high coupling (frequently import each other)</condition>
+            <condition>Functions operate on the same data structures</condition>
+            <condition>Classes share significant functionality</condition>
+            <condition>Related utility functions are spread across multiple files</condition>
+            <condition>Multiple files have similar prefixes/purposes</condition>
+            <condition>Total lines across related files is less than 250</condition>
+        </whenToConsolidate>
+
+        <howToConsolidate>
+            <groupByDomain>
+                <principle>Combine functions that work with the same domain objects</principle>
+                <principle>Keep business logic for a specific feature together</principle>
+                <principle>Maintain CRUD operations for a particular entity in one file</principle>
+            </groupByDomain>
+
+            <groupByLayer>
+                <principle>Keep all repository methods for a domain together</principle>
+                <principle>Combine related service layer functions</principle>
+                <principle>Group validation logic for related entities</principle>
+            </groupByLayer>
+
+            <organizationalPatterns>
+                <pattern>
+                    <name>Use Classes to Organize Related Functions</name>
+                    <example>
+                        <className>UserService</className>
+                        <methods>
+                            <method>create_user(self, data)</method>
+                            <method>update_user(self, id, data)</method>
+                            <method>delete_user(self, id)</method>
+                            <method>validate_user_data(self, data)</method>
+                        </methods>
+                    </example>
+                </pattern>
+                
+                <pattern>
+                    <name>Create Focused Utility Modules</name>
+                    <example>
+                        <module>utils.py</module>
+                        <classes>
+                            <class>
+                                <name>StringUtils</name>
+                                <methods>
+                                    <method>normalize(s)</method>
+                                </methods>
+                            </class>
+                            <class>
+                                <name>DateUtils</name>
+                                <methods>
+                                    <method>format_iso(d)</method>
+                                </methods>
+                            </class>
+                            <class>
+                                <name>NumberUtils</name>
+                                <methods>
+                                    <method>round_currency(n)</method>
+                                </methods>
+                            </class>
+                        </classes>
+                    </example>
+                </pattern>
+            </organizationalPatterns>
+        </howToConsolidate>
+    </fileConsolidationGuidelines>
+
+    <antiPatterns>
+        <pattern>
+            <name>Over-Fragmentation</name>
+            <badExample>
+                <file>user_create.py</file>
+                <file>user_update.py</file>
+                <file>user_delete.py</file>
+            </badExample>
+            <goodExample>
+                <file>user_operations.py</file>
+                <class>UserOperations</class>
+                <methods>
+                    <method>create_user(self, data)</method>
+                    <method>update_user(self, id, data)</method>
+                    <method>delete_user(self, id)</method>
+                    <method>_validate_user_data(self, data)</method>
+                    <method>_normalize_user_fields(self, data)</method>
+                </methods>
+            </goodExample>
+        </pattern>
+        
+        <pattern>
+            <name>Under-Consolidation</name>
+            <badExample>
+                <file>string_helpers.py (30 lines)</file>
+                <file>text_utils.py (25 lines)</file>
+            </badExample>
+            <goodExample>
+                <file>text_processing.py</file>
+                <class>TextProcessor</class>
+            </goodExample>
+        </pattern>
+    </antiPatterns>
+
+    <decisionFramework>
+        <questions>
+            <question>Are the functions logically related?</question>
+            <question>Do they operate on the same data structures?</question>
+            <question>Are they likely to change together?</question>
+            <question>Would splitting make the code harder to understand?</question>
+            <question>Would consolidation make the file too complex?</question>
+            <question>Is the current organization making imports complicated?</question>
+        </questions>
+        
+        <exampleProcess>
+            <scenario>Multiple small validator files</scenario>
+            <solution>
+                <file>validators.py</file>
+                <class>UserValidators</class>
+                <methods>
+                    <method>validate_email(email)</method>
+                    <method>validate_password(password)</method>
+                    <method>validate_username(username)</method>
+                </methods>
+            </solution>
+        </exampleProcess>
+    </decisionFramework>
+
+    <implementationStrategy>
+        <steps>
+            <step>Create a new file with a clear, encompassing name</step>
+            <step>Move related functions/classes into the new file</step>
+            <step>Update imports across the codebase</step>
+            <step>Add clear section comments to maintain organization</step>
+            <step>Consider using classes to group related functionality</step>
+            <step>Add comprehensive module-level documentation</step>
+            <step>Ensure the consolidated file stays under 250 lines</step>
+        </steps>
+    </implementationStrategy>
+</fileSizeGuidelines>

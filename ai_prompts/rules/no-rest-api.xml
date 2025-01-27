@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<noRestAPITesting>
+    <metadata>
+        <title>MCP Server Testing Constraints</title>
+        <version>1.0</version>
+        <description>Guidelines to prevent REST API testing patterns in MCP server verification</description>
+    </metadata>
+
+    <rules>
+        <rule id="no-endpoint-testing">
+            <description>Do not write tests that treat the MCP server as a REST API</description>
+            <violations>
+                <pattern>Testing GET /api/resources</pattern>
+                <pattern>Testing POST /api/tools</pattern>
+                <pattern>Checking HTTP status codes</pattern>
+                <pattern>REST endpoint availability checks</pattern>
+            </violations>
+            <correction>Use MCP Inspector or proper MCP client for testing</correction>
+        </rule>
+
+        <rule id="proper-verification">
+            <description>Use MCP protocol-compliant verification methods</description>
+            <correctApproaches>
+                <approach>
+                    <name>MCP Inspector Testing</name>
+                    <command>mcp dev server.py</command>
+                    <description>Use the MCP Inspector tool for interactive testing</description>
+                </approach>
+                <approach>
+                    <name>MCP Client Testing</name>
+                    <description>Write tests using proper MCP client implementation</description>
+                    <example>
+                        <![CDATA[
+async with ClientSession(read, write) as session:
+    await session.initialize()
+    resources = await session.list_resources()
+                        ]]>
+                    </example>
+                </approach>
+            </correctApproaches>
+        </rule>
+
+        <rule id="protocol-validation">
+            <description>Validate server using MCP protocol operations</description>
+            <validationSteps>
+                <step>
+                    <operation>Initialize connection</operation>
+                    <method>await session.initialize()</method>
+                </step>
+                <step>
+                    <operation>List available resources</operation>
+                    <method>await session.list_resources()</method>
+                </step>
+                <step>
+                    <operation>List available tools</operation>
+                    <method>await session.list_tools()</method>
+                </step>
+            </validationSteps>
+        </rule>
+    </rules>
+
+    <testingPatterns>
+        <avoid>
+            <pattern>HTTP endpoint testing</pattern>
+            <pattern>REST API assertions</pattern>
+            <pattern>URL path validation</pattern>
+            <pattern>HTTP status code checks</pattern>
+        </avoid>
+        <use>
+            <pattern>MCP protocol messages</pattern>
+            <pattern>MCP client sessions</pattern>
+            <pattern>Resource availability checks</pattern>
+            <pattern>Tool functionality verification</pattern>
+        </use>
+    </testingPatterns>
+
+    <examples>
+        <incorrect>
+            <example>
+                <title>REST-style Testing (DO NOT USE)</title>
+                <code>
+                    <![CDATA[
+def test_api_endpoints():
+    response = client.get("/api/resources")
+    assert response.status_code == 200
+                    ]]>
+                </code>
+            </example>
+        </incorrect>
+        
+        <correct>
+            <example>
+                <title>MCP Protocol Testing</title>
+                <code>
+                    <![CDATA[
+async def test_mcp_server():
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            # Initialize connection
+            await session.initialize()
+            
+            # List available resources
+            resources = await session.list_resources()
+            
+            # Verify specific resource
+            content = await session.read_resource("resource://example")
+                    ]]>
+                </code>
+            </example>
+        </correct>
+    </examples>
+
+    <documentation>
+        <reference>
+            <title>MCP Testing Guide</title>
+            <points>
+                <point>Use MCP Inspector for interactive testing</point>
+                <point>Write tests using MCP client implementation</point>
+                <point>Verify server through MCP protocol messages</point>
+                <point>Focus on resource and tool functionality</point>
+            </points>
+        </reference>
+    </documentation>
+</noRestAPITesting>

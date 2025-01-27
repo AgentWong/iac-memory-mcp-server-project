@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskList>
+    <metadata>
+        <title>MCP Server Core Patch Tasks</title>
+        <description>Tasks required to align project code with MCP Official documentation</description>
+        <priority>High</priority>
+        <targetCompletion>TBD</targetCompletion>
+    </metadata>
+
+    <phase name="Analysis and Cleanup" status="incomplete">
+        <task id="1" status="complete">
+            <name>Remove MCP Protocol Tables</name>
+            <description>Remove 'tools' and 'resources' tables from schema.sql as these are protocol concepts, not data storage requirements</description>
+            <steps>
+                <step>Remove CREATE TABLE definition for 'tools'</step>
+                <step>Remove CREATE TABLE definition for 'resources'</step>
+                <step>Update any dependent foreign key constraints</step>
+            </steps>
+            <validation>
+                <check>Schema compilation succeeds after removal</check>
+                <check>No remaining references to removed tables</check>
+            </validation>
+        </task>
+
+        <task id="2" status="complete">
+            <name>Review Database Manager Implementation</name>
+            <description>Update DatabaseManager class to reflect removal of protocol tables</description>
+            <steps>
+                <step>Remove references to tools/resources tables in initialization</step>
+                <step>Update table verification logic in get_db()</step>
+                <step>Update reset_database() method</step>
+            </steps>
+        </task>
+    </phase>
+
+    <phase name="Resource Implementation" status="incomplete">
+        <task id="3" status="complete">
+            <name>Define Resource URIs</name>
+            <description>Create standardized URI scheme for IaC resources</description>
+            <steps>
+                <step>Define URI pattern for Terraform providers</step>
+                <step>Define URI pattern for Terraform resources</step>
+                <step>Define URI pattern for Ansible collections</step>
+                <step>Define URI pattern for Ansible modules</step>
+            </steps>
+            <validation>
+                <check>URIs follow MCP best practices</check>
+                <check>URIs are unique and descriptive</check>
+            </validation>
+        </task>
+
+        <task id="4" status="complete">
+            <name>Implement Resource Handlers</name>
+            <description>Create proper MCP resource handlers for read operations</description>
+            <steps>
+                <step status="complete">Implement handle_list_resources()</step>
+                <step status="complete">Implement handle_read_resource()</step>
+                <step status="complete">Add proper error handling</step>
+                <step status="complete">Add logging</step>
+            </steps>
+            <completion>
+                <date>2025-01-15</date>
+                <notes>
+                    - Implemented list_resources with proper error handling and logging
+                    - Implemented read_resource with URI scheme handling
+                    - Moved DB operations to terraform.py, ansible.py, entities.py
+                    - Added comprehensive logging throughout
+                </notes>
+            </completion>
+        </task>
+    </phase>
+
+    <phase name="Tool Implementation" status="incomplete">
+        <task id="5" status="complete">
+            <name>Define Tool Operations</name>
+            <description>Create standardized tool definitions for IaC operations</description>
+            <steps>
+                <step status="complete">Define tools for Terraform provider operations</step>
+                <step status="complete">Define tools for Terraform resource operations</step>
+                <step status="complete">Define tools for Ansible collection operations</step>
+                <step status="complete">Define tools for Ansible module operations</step>
+            </steps>
+            <completion>
+                <date>2025-01-15</date>
+                <notes>
+                    - Added Terraform provider operation tools (add/update)
+                    - Added Terraform resource operation tools (add/update)
+                    - Added Ansible collection operation tools (add/update)
+                    - Added Ansible module operation tools (add/update)
+                    - Added proper schemas with descriptions for all tools
+                </notes>
+            </completion>
+        </task>
+
+        <task id="6" status="incomplete">
+            <name>Implement Tool Handlers</name>
+            <description>Create proper MCP tool handlers for create/update/delete operations</description>
+            <steps>
+                <step>Implement handle_list_tools()</step>
+                <step>Implement handle_call_tool()</step>
+                <step>Add proper validation</step>
+                <step>Add error handling</step>
+                <step>Add logging</step>
+            </steps>
+        </task>
+    </phase>
+
+    <phase name="Integration" status="incomplete">
+        <task id="7" status="complete">
+            <name>Integrate Terraform Operations</name>
+            <description>Connect Terraform database operations with MCP interface</description>
+            <steps>
+                <step status="complete">Map database operations to appropriate tools/resources</step>
+                <step status="complete">Implement proper error handling and validation</step>
+                <step status="complete">Add logging and monitoring</step>
+            </steps>
+            <completion>
+                <date>2025-01-15</date>
+                <notes>
+                    - Added comprehensive error handling for all Terraform operations
+                    - Implemented detailed logging throughout provider/resource operations
+                    - Added validation for all Terraform-related inputs
+                    - Connected database operations to MCP interface with proper error propagation
+                    - Added operation tracking and monitoring
+                </notes>
+            </completion>
+        </task>
+
+        <task id="8" status="complete">
+            <name>Integrate Ansible Operations</name>
+            <description>Connect Ansible database operations with MCP interface</description>
+            <steps>
+                <step status="complete">Map database operations to appropriate tools/resources</step>
+                <step status="complete">Implement proper error handling and validation</step>
+                <step status="complete">Add logging and monitoring</step>
+            </steps>
+            <completion>
+                <date>2025-01-15</date>
+                <notes>
+                    - Added comprehensive error handling for all Ansible operations
+                    - Implemented detailed logging throughout collection/module operations
+                    - Added validation for all Ansible-related inputs
+                    - Connected database operations to MCP interface with proper error propagation
+                    - Added operation tracking and monitoring
+                </notes>
+            </completion>
+        </task>
+    </phase>
+
+    <phase name="Testing" status="incomplete">
+        <task id="9" status="complete">
+            <name>Update Test Suite</name>
+            <description>Modify tests to reflect new MCP-compliant implementation</description>
+            <steps>
+                <step status="complete">Update database schema tests</step>
+                <step status="complete">Add resource handler tests</step>
+                <step status="complete">Add tool handler tests</step>
+                <step status="complete">Update integration tests</step>
+            </steps>
+            <validation>
+                <check status="complete">All tests pass</check>
+                <check status="complete">Coverage meets requirements</check>
+            </validation>
+            <completion>
+                <date>2025-01-15</date>
+                <notes>
+                    - Updated all database schema tests
+                    - Added comprehensive resource handler tests
+                    - Added extensive tool handler tests with error cases
+                    - Updated integration tests for MCP compliance
+                    - Verified test coverage meets requirements
+                </notes>
+            </completion>
+        </task>
+
+        <task id="10" status="complete">
+            <name>Verify MCP Compliance</name>
+            <description>Ensure all changes align with MCP specification</description>
+            <steps>
+                <step status="complete">Verify resource implementation against spec</step>
+                <step status="complete">Verify tool implementation against spec</step>
+                <step status="complete">Test with MCP Inspector</step>
+                <step status="complete">Document any spec deviations</step>
+            </steps>
+            <validation>
+                <check status="complete">Passes MCP Inspector validation</check>
+                <check status="complete">Follows all MCP best practices</check>
+            </validation>
+            <completion>
+                <date>2025-01-15</date>
+                <notes>
+                    - Added comprehensive MCP compliance tests
+                    - Verified logging compliance with MCP standards
+                    - Validated error code alignment with MCP spec
+                    - Confirmed URI scheme compliance
+                    - Added response format validation
+                    - All tests passing in MCP Inspector
+                </notes>
+            </completion>
+        </task>
+    </phase>
+
+    <phase name="Documentation" status="incomplete">
+        <task id="11" status="complete">
+            <name>Update Documentation</name>
+            <description>Update all documentation to reflect MCP-compliant implementation</description>
+            <steps>
+                <step status="complete">Document resource URIs</step>
+                <step status="complete">Document available tools</step>
+                <step status="complete">Update examples</step>
+            </steps>
+            <completion>
+                <date>2025-01-15</date>
+                <notes>
+                    - Added resource_uris.md documenting URI schemes
+                    - Added tools.md documenting available tools
+                    - Added examples.md with usage examples
+                    - Documented error handling and logging
+                    - Added MCP compliance details
+                </notes>
+            </completion>
+        </task>
+    </phase>
+</taskList>

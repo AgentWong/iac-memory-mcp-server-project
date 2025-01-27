@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectRules>
+    <metadata>
+        <title>IaC Memory MCP Server Project Rules</title>
+        <version>1.0</version>
+        <description>Behavioral rules and constraints for AI assistance during development</description>
+    </metadata>
+
+    <technologyConstraints>
+        <serverImplementation>
+            <rule type="mandatory">
+                <directive>Use low-level Server from mcp.server package</directive>
+                <rationale>Provides better control over server behavior and protocol compliance</rationale>
+                <doNot>
+                    <item>Do not use FastMCP implementation</item>
+                    <item>Do not introduce alternative server frameworks (e.g., FastAPI)</item>
+                </doNot>
+            </rule>
+        </serverImplementation>
+
+        <apiConstraints>
+            <rule type="mandatory">
+                <directive>Use only MCP protocol and SDK</directive>
+                <rationale>MCP servers communicate via MCP protocol, not HTTP/REST APIs</rationale>
+                <doNot>
+                    <item>Do not import FastAPI or related packages</item>
+                    <item>Do not use API-centric patterns or terminology</item>
+                    <item>Do not implement REST endpoints or routes</item>
+                </doNot>
+                <patterns>
+                    <correct>
+                        <item>Context object for MCP capabilities</item>
+                    </correct>
+                    <incorrect>
+                        <item>API endpoints</item>
+                        <item>Routes</item>
+                        <item>FastAPI dependencies</item>
+                    </incorrect>
+                </patterns>
+                <requirements>
+                    <item>Use only MCP SDK for server implementation</item>
+                    <item>Follow MCP protocol specifications strictly</item>
+                    <item>Use resource:// and tool patterns exclusively</item>
+                </requirements>
+            </rule>
+        </apiConstraints>
+        
+        <dependencies>
+            <rule type="mandatory">
+                <directive>Use only core MCP SDK dependencies</directive>
+                <rationale>Maintains simplicity and follows MCP design patterns</rationale>
+                <doNot>
+                    <item>Do not introduce additional web frameworks</item>
+                    <item>Do not add unnecessary third-party libraries</item>
+                </doNot>
+            </rule>
+        </dependencies>
+    </technologyConstraints>
+
+    <implementationPatterns>
+        <asyncSync>
+            <rule type="mandatory">
+                <directive>Keep all MCP handlers as async functions</directive>
+                <rationale>Follows MCP protocol design for non-blocking operations</rationale>
+            </rule>
+            <rule type="mandatory">
+                <directive>Keep all database operations synchronous</directive>
+                <rationale>SQLite performs best with synchronous operations</rationale>
+            </rule>
+            <rule type="mandatory">
+                <directive>Use context managers for database connections</directive>
+                <rationale>Ensures proper resource cleanup</rationale>
+            </rule>
+            <doNot>
+                <item>Do not mix async and sync at the database level</item>
+                <item>Do not force async on SQLite operations</item>
+                <item>Do not use async database libraries</item>
+            </doNot>
+        </asyncSync>
+
+        <handlers>
+            <rule type="mandatory">
+                <directive>Implement both resource and tool handlers</directive>
+                <rationale>Provides complete MCP protocol support</rationale>
+                <structure>
+                    <item>All handlers must be async functions</item>
+                    <item>Use synchronous database operations inside handlers</item>
+                    <item>Use Context object only for progress/status updates</item>
+                </structure>
+            </rule>
+        </handlers>
+    </implementationPatterns>
+
+    <dataManagement>
+        <database>
+            <rule type="mandatory">
+                <directive>Use single SQLite database for persistence</directive>
+                <rationale>Simple, reliable, and matches project requirements</rationale>
+                <doNot>
+                    <item>Do not introduce additional databases</item>
+                    <item>Do not implement caching layers</item>
+                </doNot>
+            </rule>
+            <rule type="mandatory">
+                <directive>Use synchronous database operations</directive>
+                <rationale>Matches SQLite's design and prevents complexity</rationale>
+                <implementation>
+                    <item>Use context managers for connections</item>
+                    <item>Keep operations inside synchronous functions</item>
+                    <item>Handle errors appropriately</item>
+                </implementation>
+            </rule>
+        </database>
+    </dataManagement>
+
+    <progressHandling>
+        <contextUsage>
+            <rule type="mandatory">
+                <directive>Use Context object only for progress and status updates</directive>
+                <rationale>Maintains clear separation of concerns</rationale>
+                <allowedUses>
+                    <item>Progress tracking</item>
+                    <item>Status updates</item>
+                    <item>Info messages</item>
+                </allowedUses>
+                <doNot>
+                    <item>Do not use Context for database operations</item>
+                    <item>Do not use Context for business logic</item>
+                </doNot>
+            </rule>
+        </contextUsage>
+    </progressHandling>
+
+    <testing>
+        <requirements>
+            <rule type="mandatory">
+                <directive>Test async/sync boundaries carefully</directive>
+                <rationale>Ensures proper operation of mixed async/sync code</rationale>
+                <focusAreas>
+                    <item>Handler async behavior</item>
+                    <item>Database synchronous operations</item>
+                    <item>Progress reporting</item>
+                    <item>Status updates</item>
+                </focusAreas>
+            </rule>
+        </requirements>
+    </testing>
+</projectRules>

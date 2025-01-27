@@ -1,0 +1,20 @@
+# Disregarding rules
+To help me better adhere to these rules:
+
+1. Please remind me to explicitly check testing-rules.xml before making any changes to TestContext
+2. Ask me to explain my reasoning if I propose changes that deviate from established rules
+3. Have me confirm that any proposed changes align with the oscillation prevention rules
+
+
+
+
+The behavior you're seeing suggests two things:
+
+1. For CTRL+C (SIGINT):
+- The server receives the signal
+- Prints "Received shutdown signal"
+- But isn't properly cleaning up and exiting its async tasks/loops
+
+2. For CTRL+D (EOF):
+- The server is detecting the EOF on stdin
+- But the timeout error suggests we're not handling stream closure correctly

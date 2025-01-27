@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<implementationTasks>
+    <metadata>
+        <title>IaC Memory MCP Server Implementation Tasks</title>
+        <version>1.0</version>
+        <description>Structured task list for implementing IaC Memory MCP Server improvements</description>
+        <instructions>
+            Mark each task's status attribute as "complete" when finished. All tasks begin with status="incomplete".
+            Example: &lt;task status="incomplete"&gt; becomes &lt;task status="complete"&gt;
+        </instructions>
+    </metadata>
+
+    <phase name="Code Reorganization" status="incomplete">
+        <task id="CR1" status="complete">
+            <name>Create New File Structure</name>
+            <description>Set up new directory structure and create required files</description>
+            <priority>High</priority>
+            <acceptanceCriteria>
+                <criterion status="complete">Create server.py with core server functionality</criterion>
+                <criterion status="complete">Create tools.py for tool-related code</criterion>
+                <criterion status="complete">Create resources.py for resource management</criterion>
+                <criterion status="complete">Create prompts.py for prompt handling</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task id="CR2" status="complete">
+            <name>Migrate Existing Code</name>
+            <description>Move code sections to appropriate new files</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>CR1</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Move server initialization code to server.py</criterion>
+                <criterion status="complete">Move tool handlers to tools.py</criterion>
+                <criterion status="complete">Move resource handlers to resources.py</criterion>
+                <criterion status="complete">Move prompt handlers to prompts.py</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task id="CR3" status="complete">
+            <name>Update Dependencies</name>
+            <description>Update imports and verify module dependencies</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>CR2</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Update all import statements</criterion>
+                <criterion status="complete">Verify circular dependency absence</criterion>
+                <criterion status="complete">Test module loading</criterion>
+            </acceptanceCriteria>
+        </task>
+    </phase>
+
+    <phase name="Schema Implementation" status="incomplete">
+        <task id="SI1" status="complete">
+            <name>Create New Schema</name>
+            <description>Implement new database schema with IaC-specific tables</description>
+            <priority>High</priority>
+            <acceptanceCriteria>
+                <criterion status="complete">Create terraform_providers table</criterion>
+                <criterion status="complete">Create terraform_resources table</criterion>
+                <criterion status="complete">Create ansible_collections table</criterion>
+                <criterion status="complete">Create ansible_modules table</criterion>
+                <criterion status="complete">Implement foreign key relationships</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task id="SI2" status="complete">
+            <name>Database Migration</name>
+            <description>Implement clean-slate database creation with new schema</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>SI1</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Add database deletion functionality</criterion>
+                <criterion status="complete">Implement schema initialization</criterion>
+                <criterion status="complete">Add schema version tracking</criterion>
+            </acceptanceCriteria>
+        </task>
+    </phase>
+
+    <phase name="Database Layer Enhancement" status="incomplete">
+        <task id="DB1" status="complete">
+            <name>Implement Terraform Provider Methods</name>
+            <description>Add methods for managing Terraform providers</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>SI2</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Implement add_terraform_provider</criterion>
+                <criterion status="complete">Implement get_provider_resources</criterion>
+                <criterion status="complete">Implement update_provider_version</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task id="DB2" status="complete">
+            <name>Implement Terraform Resource Methods</name>
+            <description>Add methods for managing Terraform resources</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>DB1</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Implement add_terraform_resource</criterion>
+                <criterion status="complete">Implement get_resource_info</criterion>
+                <criterion status="complete">Implement update_resource_schema</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task id="DB3" status="complete">
+            <name>Implement Ansible Collection Methods</name>
+            <description>Add methods for managing Ansible collections</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>SI2</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Implement add_ansible_collection</criterion>
+                <criterion status="complete">Implement get_collection_modules</criterion>
+                <criterion status="complete">Implement update_collection_version</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task id="DB4" status="complete">
+            <name>Implement Ansible Module Methods</name>
+            <description>Add methods for managing Ansible modules</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>DB3</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Implement add_ansible_module</criterion>
+                <criterion status="complete">Implement get_module_info</criterion>
+                <criterion status="complete">Implement update_module_version</criterion>
+            </acceptanceCriteria>
+        </task>
+    </phase>
+
+    <phase name="Testing and Documentation" status="incomplete">
+        <task id="TD1" status="complete">
+            <name>Implement Unit Tests</name>
+            <description>Create comprehensive unit tests for new functionality</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>DB4</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Add tests for Terraform provider methods</criterion>
+                <criterion status="complete">Add tests for Terraform resource methods</criterion>
+                <criterion status="complete">Add tests for Ansible collection methods</criterion>
+                <criterion status="complete">Add tests for Ansible module methods</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task id="TD2" status="incomplete">
+            <name>Add Documentation</name>
+            <description>Create comprehensive documentation for new functionality</description>
+            <priority>High</priority>
+            <dependencies>
+                <dependentTask>TD1</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Document database schema</criterion>
+                <criterion status="complete">Add method documentation</criterion>
+                <criterion status="complete">Create usage examples</criterion>
+                <criterion status="complete">Update README</criterion>
+            </acceptanceCriteria>
+        </task>
+
+        <task id="TD3" status="incomplete">
+            <name>Performance Validation</name>
+            <description>Validate performance of new implementation</description>
+            <priority>Medium</priority>
+            <dependencies>
+                <dependentTask>TD2</dependentTask>
+            </dependencies>
+            <acceptanceCriteria>
+                <criterion status="complete">Test database operation performance</criterion>
+            </acceptanceCriteria>
+        </task>
+    </phase>
+</implementationTasks>

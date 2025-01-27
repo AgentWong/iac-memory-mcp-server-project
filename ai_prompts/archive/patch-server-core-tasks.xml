@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskList>
+    <metadata>
+        <title>MCP Server Core Patch Tasks</title>
+        <description>Tasks for implementing server core patches to fix timeout and initialization issues</description>
+        <version>1.0.0</version>
+        <date>2024-01-13</date>
+    </metadata>
+
+    <overview>
+        <projectScope>Modify the MCP server implementation to correctly handle server lifecycle and remove premature termination issues</projectScope>
+        <goals>
+            <goal>Implement proper server lifecycle management</goal>
+            <goal>Remove artificial timeouts</goal>
+            <goal>Improve test implementation</goal>
+        </goals>
+        <constraints>
+            <constraint>Must maintain compatibility with MCP specification</constraint>
+            <constraint>Changes should not break existing functionality</constraint>
+            <constraint>Must preserve error handling and logging</constraint>
+        </constraints>
+    </overview>
+
+    <tasks>
+        <category name="Server Core Changes">
+            <task>
+                <name>Remove Complex Shutdown Logic</name>
+                <status>complete</status>
+                <description>Remove the existing complex shutdown mechanism and task group management from server.py</description>
+                <priority>High</priority>
+                <acceptanceCriteria>
+                    <criterion status="complete">Shutdown event removed</criterion>
+                    <criterion status="complete">Task group management code removed</criterion>
+                    <criterion status="complete">Verify no residual shutdown-related code</criterion>
+                </acceptanceCriteria>
+                <resources>
+                    <item>server.py</item>
+                    <item>MCP SDK documentation</item>
+                </resources>
+            </task>
+
+            <task>
+                <name>Simplify Main Function</name>
+                <status>complete</status>
+                <description>Restructure the main function to focus on initialization and running the server</description>
+                <priority>High</priority>
+                <dependencies>
+                    <dependentTask>Remove Complex Shutdown Logic</dependentTask>
+                </dependencies>
+                <acceptanceCriteria>
+                    <criterion status="complete">Database initialization maintained</criterion>
+                    <criterion status="complete">Handler registration preserved</criterion>
+                    <criterion status="complete">Server configuration simplified</criterion>
+                    <criterion status="complete">Clean error handling implemented</criterion>
+                </acceptanceCriteria>
+                <resources>
+                    <item>server.py</item>
+                    <item>MCP initialization documentation</item>
+                </resources>
+            </task>
+
+            <task>
+                <name>Implement Server Run Logic</name>
+                <status>complete</status>
+                <description>Update the server run implementation to properly use SDK's run() method</description>
+                <priority>High</priority>
+                <dependencies>
+                    <dependentTask>Simplify Main Function</dependentTask>
+                </dependencies>
+                <acceptanceCriteria>
+                    <criterion status="complete">Proper stdio server setup</criterion>
+                    <criterion status="complete">Correct initialization options</criterion>
+                    <criterion status="complete">Server run call implemented</criterion>
+                    <criterion status="complete">Error handling maintained</criterion>
+                </acceptanceCriteria>
+                <resources>
+                    <item>server.py</item>
+                    <item>MCP server lifecycle documentation</item>
+                </resources>
+            </task>
+        </category>
+
+        <category name="Test Implementation Updates">
+            <task>
+                <name>Refactor Test Context Manager</name>
+                <status>complete</status>
+                <description>Update the mcp_test_context implementation to properly handle timeouts and initialization</description>
+                <priority>Medium</priority>
+                <acceptanceCriteria>
+                    <criterion status="complete">Timeout wrapper moved to test execution</criterion>
+                    <criterion status="complete">Initialization delay removed</criterion>
+                    <criterion status="complete">Error handling improved</criterion>
+                    <criterion status="complete">Resource cleanup maintained</criterion>
+                </acceptanceCriteria>
+                <resources>
+                    <item>test_integration.py</item>
+                    <item>MCP testing documentation</item>
+                </resources>
+            </task>
+
+            <task>
+                <name>Update Test Environment Setup</name>
+                <status>complete</status>
+                <description>Improve the test environment configuration and initialization</description>
+                <priority>Medium</priority>
+                <dependencies>
+                    <dependentTask>Refactor Test Context Manager</dependentTask>
+                </dependencies>
+                <acceptanceCriteria>
+                    <criterion status="complete">Environment variables properly set</criterion>
+                    <criterion status="complete">Debug flags configured</criterion>
+                    <criterion status="complete">Server parameters updated</criterion>
+                </acceptanceCriteria>
+                <resources>
+                    <item>test_integration.py</item>
+                    <item>Testing configuration documentation</item>
+                </resources>
+            </task>
+        </category>
+
+        <category name="Verification">
+            <task>
+                <name>Test Server Lifecycle</name>
+                <status>incomplete</status>
+                <description>Verify proper server lifecycle behavior after changes</description>
+                <priority>High</priority>
+                <dependencies>
+                    <dependentTask>Implement Server Run Logic</dependentTask>
+                    <dependentTask>Update Test Environment Setup</dependentTask>
+                </dependencies>
+                <acceptanceCriteria>
+                    <criterion status="incomplete">Server starts correctly</criterion>
+                    <criterion status="incomplete">No premature termination</criterion>
+                    <criterion status="incomplete">Proper shutdown behavior</criterion>
+                    <criterion status="incomplete">Error scenarios handled</criterion>
+                </acceptanceCriteria>
+                <resources>
+                    <item>server.py</item>
+                    <item>test_integration.py</item>
+                    <item>MCP Inspector</item>
+                </resources>
+            </task>
+
+            <task>
+                <name>Integration Test Suite</name>
+                <status>incomplete</status>
+                <description>Run and verify the complete integration test suite</description>
+                <priority>High</priority>
+                <dependencies>
+                    <dependentTask>Test Server Lifecycle</dependentTask>
+                </dependencies>
+                <acceptanceCriteria>
+                    <criterion status="incomplete">All tests pass</criterion>
+                    <criterion status="incomplete">No timeout issues</criterion>
+                    <criterion status="incomplete">Resource cleanup verified</criterion>
+                    <criterion status="incomplete">Error handling confirmed</criterion>
+                </acceptanceCriteria>
+                <resources>
+                    <item>test_integration.py</item>
+                    <item>Testing documentation</item>
+                </resources>
+            </task>
+        </category>
+    </tasks>
+
+    <importantRules>
+        <rule>Mark tasks as complete only after verifying all acceptance criteria</rule>
+        <rule>Follow dependencies order when implementing changes</rule>
+        <rule>Maintain comprehensive error handling throughout changes</rule>
+        <rule>Document any deviations from original implementation</rule>
+    </importantRules>
+</taskList>

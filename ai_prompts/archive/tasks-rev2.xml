@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taskGeneration>
+    <!-- 
+    Instructions for AI Task Management:
+    1. Each task has a status attribute initialized as "incomplete"
+    2. When implementing a task, verify all acceptance criteria are met
+    3. Only after successful verification, update the task's status to "complete"
+    4. Update status in sequential order within each taskGroup
+    5. Document the completion in the response when changing status
+    -->
+
+    <metadata>
+        <project>IaC Memory MCP Server</project>
+        <version>1.0.0</version>
+        <description>Tasks for updating the MCP server implementation</description>
+        <status>incomplete</status>
+    </metadata>
+
+    <overview>
+        <goals>
+            <goal>Standardize tool naming conventions</goal>
+            <goal>Implement complete CRUD operations</goal>
+            <goal>Fix prompt implementation</goal>
+            <goal>Add relationship viewing capability</goal>
+        </goals>
+        <constraints>
+            <constraint>Maintain separate schema.sql file</constraint>
+            <constraint>Follow MCP SDK patterns</constraint>
+            <constraint>Ensure backward compatibility</constraint>
+        </constraints>
+    </overview>
+
+    <currentState>
+        <issues>
+            <issue>
+                <name>Tool Naming Convention</name>
+                <description>Tools use hyphenated names instead of snake_case</description>
+                <example>
+                    <current>create-entity</current>
+                    <required>create_entity</required>
+                </example>
+                <impact>Breaks convention with other MCP servers</impact>
+            </issue>
+            <issue>
+                <name>Incomplete CRUD Operations</name>
+                <description>Only CREATE operations available for some tables</description>
+                <impact>Limited functionality for data management</impact>
+            </issue>
+            <issue>
+                <name>Incorrect Prompt Implementation</name>
+                <description>Uses non-existent summarize-notes functionality</description>
+                <impact>Prompts don't match actual capabilities</impact>
+            </issue>
+        </issues>
+    </currentState>
+
+    <implementationTasks>
+        <taskGroup name="Database Layer">
+            <task status="complete">
+                <name>Update DatabaseManager Class</name>
+                <priority>High</priority>
+                <description>Add methods for complete CRUD operations</description>
+                <codeExample>
+                    <![CDATA[
+    def update_entity(self, entity_id: str, updates: dict) -> bool:
+        """Update an existing entity"""
+        set_clause = ", ".join(f"{k} = ?" for k in updates.keys())
+        values = tuple(updates.values()) + (entity_id,)
+        query = f"UPDATE entities SET {set_clause} WHERE id = ?"
+        try:
+            with self.get_connection() as conn:
+                cursor = conn.execute(query, values)
+                return cursor.rowcount > 0
+        except sqlite3.Error as e:
+            raise DatabaseError(f"Update failed: {str(e)}")
+                    ]]>
+                </codeExample>
+                <acceptanceCriteria>
+                    <criterion>All CRUD methods implemented</criterion>
+                    <criterion>Proper error handling</criterion>
+                    <criterion>Transaction support where needed</criterion>
+                </acceptanceCriteria>
+            </task>
+        </taskGroup>
+
+        <taskGroup name="Server Implementation">
+            <task status="complete">
+                <name>Fix Tool Naming</name>
+                <priority>High</priority>
+                <description>Convert hyphenated names to snake_case</description>
+                <codeExample>
+                    <![CDATA[
+    @self.server.list_tools()
+    async def handle_list_tools() -> list[types.Tool]:
+        return [
+            types.Tool(
+                name="create_entity",  # Changed from create-entity
+                description="Create a new entity",
+                inputSchema={
+                    "type": "object",
+                    "properties": {
+                        "name": {"type": "string"},
+                        "entity_type": {"type": "string"}
+                    },
+                    "required": ["name", "entity_type"]
+                }
+            ),
+            # Additional tools...
+        ]
+                    ]]>
+                </codeExample>
+                <acceptanceCriteria>
+                    <criterion>All tool names follow snake_case</criterion>
+                    <criterion>Documentation updated</criterion>
+                    <criterion>Tests updated</criterion>
+                </acceptanceCriteria>
+            </task>
+
+            <task status="complete">
+                <name>Implement CRUD Tools</name>
+                <priority>High</priority>
+                <description>Add complete CRUD operation tools for all tables</description>
+                <codeExample>
+                    <![CDATA[
+    # Provider Resources CRUD
+    types.Tool(
+        name="create_provider_resource",
+        description="Create a new provider resource",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "provider_name": {"type": "string"},
+                "resource_type": {"type": "string"},
+                "schema_version": {"type": "string"},
+                "doc_url": {"type": "string"}
+            },
+            "required": ["provider_name", "resource_type", 
+                       "schema_version", "doc_url"]
+        }
+    ),
+    types.Tool(
+        name="read_provider_resource",
+        description="Read a provider resource",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "id": {"type": "string"}
+            },
+            "required": ["id"]
+        }
+    )
+                    ]]>
+                </codeExample>
+                <acceptanceCriteria>
+                    <criterion>CRUD tools for all tables</criterion>
+                    <criterion>Consistent naming</criterion>
+                    <criterion>Proper input validation</criterion>
+                </acceptanceCriteria>
+            </task>
+
+            <task status="complete">
+                <name>Fix Prompt Implementation</name>
+                <priority>High</priority>
+                <description>Replace summarize-notes with IaC-specific prompts</description>
+                <codeExample>
+                    <![CDATA[
+    @self.server.list_prompts()
+    async def handle_list_prompts() -> list[types.Prompt]:
+        return [
+            types.Prompt(
+                name="iac_resource_search",
+                description="Find Infrastructure-as-Code resources",
+                arguments=[
+                    types.PromptArgument(
+                        name="provider",
+                        description="Cloud provider name",
+                        required=True
+                    ),
+                    types.PromptArgument(
+                        name="resource_type",
+                        description="Type of resource",
+                        required=True
+                    )
+                ]
+            )
+        ]
+                    ]]>
+                </codeExample>
+                <acceptanceCriteria>
+                    <criterion>Removed summarize-notes prompt</criterion>
+                    <criterion>Added IaC-specific prompts</criterion>
+                    <criterion>Proper argument handling</criterion>
+                </acceptanceCriteria>
+            </task>
+
+            <task status="complete">
+                <name>Implement Relationship Viewing</name>
+                <priority>Medium</priority>
+                <description>Add tool for viewing entity relationships</description>
+                <codeExample>
+                    <![CDATA[
+    @self.server.call_tool()
+    async def handle_view_relationships(entity_id: Optional[str] = None) -> str:
+        query = """
+            SELECT e.id, e.name, e.type, 
+                   o.content as observation
+            FROM entities e
+            LEFT JOIN observations o ON e.id = o.entity_id
+            WHERE 1=1
+        """
+        params = []
+        if entity_id:
+            query += " AND e.id = ?"
+            params.append(entity_id)
+            
+        return self.db.execute_query(query, tuple(params))
+                    ]]>
+                </codeExample>
+                <acceptanceCriteria>
+                    <criterion>View relationships by entity</criterion>
+                    <criterion>Show related observations</criterion>
+                    <criterion>Optional filtering</criterion>
+                </acceptanceCriteria>
+            </task>
+        </taskGroup>
+    </implementationTasks>
+
+    <testing>
+        <unitTests status="complete">
+            <description>Tests for individual components</description>
+            <requirements>
+                <requirement>Test all CRUD operations</requirement>
+                <requirement>Test prompt handling</requirement>
+                <requirement>Test relationship viewing</requirement>
+            </requirements>
+        </unitTests>
+        
+        <integrationTests status="complete">
+            <description>End-to-end functionality tests</description>
+            <requirements>
+                <requirement>Test complete workflows</requirement>
+                <requirement>Verify data persistence</requirement>
+                <requirement>Check error handling</requirement>
+            </requirements>
+        </integrationTests>
+    </testing>
+
+    <documentation status="incomplete">
+        <requirements>
+            <requirement status="complete">Update tool documentation</requirement>
+            <requirement status="complete">Document new prompts</requirement>
+            <requirement status="complete">Add relationship viewing examples</requirement>
+            <requirement status="complete">Update README.md</requirement>
+        </requirements>
+    </documentation>
+
+    <deployment status="complete">
+        <steps>
+            <step status="complete">Deploy schema updates</step>
+            <step status="complete">Update server code</step>
+            <step status="complete">Run integration tests</step>
+            <step status="complete">Update documentation</step>
+        </steps>
+    </deployment>
+</taskGeneration>

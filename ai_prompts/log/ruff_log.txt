@@ -1,0 +1,47 @@
+src/iac_memory_mcp_server/resources.py:120:1: E402 Module level import not at top of file
+    |
+120 | / from .db.resources import (
+121 | |     get_ansible_collections,
+122 | |     get_ansible_modules,
+123 | |     get_entities,
+124 | |     get_entity_relationships,
+125 | |     get_terraform_providers,
+126 | |     get_terraform_resources,
+127 | | )
+    | |_^ E402
+128 |   from .db.terraform import get_provider_resources, get_resource_info
+129 |   from .shared import get_db
+    |
+
+src/iac_memory_mcp_server/resources.py:128:1: E402 Module level import not at top of file
+    |
+126 |     get_terraform_resources,
+127 | )
+128 | from .db.terraform import get_provider_resources, get_resource_info
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+129 | from .shared import get_db
+    |
+
+src/iac_memory_mcp_server/resources.py:129:1: E402 Module level import not at top of file
+    |
+127 | )
+128 | from .db.terraform import get_provider_resources, get_resource_info
+129 | from .shared import get_db
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^ E402
+130 |
+131 | # Define resource templates for common access patterns
+    |
+
+src/tests/test_database_methods.py:333:13: F841 Local variable `collection_id` is assigned to but never used
+    |
+331 |         async with capture_taskgroup_errors():
+332 |             # First add a collection
+333 |             collection_id = db.add_ansible_collection(
+    |             ^^^^^^^^^^^^^ F841
+334 |                 "community.aws",
+335 |                 "3.0.0",
+    |
+    = help: Remove assignment to unused variable `collection_id`
+
+Found 4 errors.
+No fixes available (1 hidden fix can be enabled with the `--unsafe-fixes` option).

@@ -1,0 +1,58 @@
+Installed 20 packages in 2ms
+Server initialization failed: NotificationOptions.__init__() got an unexpected keyword argument 'should_notify_resource_list_changed'
+Traceback (most recent call last):
+  File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/iac_memory_mcp_server/server.py", line 355, in _run_server
+    notification_options=NotificationOptions(
+                         ^^^^^^^^^^^^^^^^^^^^
+TypeError: NotificationOptions.__init__() got an unexpected keyword argument 'should_notify_resource_list_changed'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/mcp/server/stdio.py", line 83, in stdio_server
+    yield read_stream, write_stream
+  File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/iac_memory_mcp_server/server.py", line 336, in main
+    await _run_server(read_stream, write_stream)
+  File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/iac_memory_mcp_server/server.py", line 365, in _run_server
+    sys.exit(1)
+SystemExit: 1
+
+During handling of the above exception, another exception occurred:
+
+  + Exception Group Traceback (most recent call last):
+  |   File "<frozen runpy>", line 198, in _run_module_as_main
+  |   File "<frozen runpy>", line 88, in _run_code
+  |   File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/iac_memory_mcp_server/__main__.py", line 6, in <module>
+  |     main()
+  |   File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/iac_memory_mcp_server/__init__.py", line 17, in main
+  |     asyncio.run(server.main())
+  |   File "/home/herman/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 194, in run
+  |     return runner.run(main)
+  |            ^^^^^^^^^^^^^^^^
+  |   File "/home/herman/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/lib/python3.12/asyncio/runners.py", line 118, in run
+  |     return self._loop.run_until_complete(task)
+  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/herman/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/lib/python3.12/asyncio/base_events.py", line 686, in run_until_complete
+  |     return future.result()
+  |            ^^^^^^^^^^^^^^^
+  |   File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/iac_memory_mcp_server/server.py", line 334, in main
+  |     async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/herman/.local/share/uv/python/cpython-3.12.8-linux-x86_64-gnu/lib/python3.12/contextlib.py", line 231, in __aexit__
+  |     await self.gen.athrow(value)
+  |   File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/mcp/server/stdio.py", line 80, in stdio_server
+  |     async with anyio.create_task_group() as tg:
+  |                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |   File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/anyio/_backends/_asyncio.py", line 767, in __aexit__
+  |     raise BaseExceptionGroup(
+  | BaseExceptionGroup: unhandled errors in a TaskGroup (1 sub-exception)
+  +-+---------------- 1 ----------------
+    | Traceback (most recent call last):
+    |   File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/mcp/server/stdio.py", line 83, in stdio_server
+    |     yield read_stream, write_stream
+    |   File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/iac_memory_mcp_server/server.py", line 336, in main
+    |     await _run_server(read_stream, write_stream)
+    |   File "/home/herman/.cache/uv/archive-v0/XU2TcebHikysoVVlA_FPZ/lib/python3.12/site-packages/iac_memory_mcp_server/server.py", line 365, in _run_server
+    |     sys.exit(1)
+    | SystemExit: 1
+    +------------------------------------
