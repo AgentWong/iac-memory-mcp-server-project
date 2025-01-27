@@ -117,6 +117,7 @@ For development, create a `.env` file:
 ```bash
 DATABASE_URL=sqlite:////path/to/db.sqlite
 MCP_DEBUG=1
+MCP_TEST_MODE=1
 ```
 
 ## Integration with Claude Desktop
@@ -144,7 +145,13 @@ MCP_DEBUG=1
 "mcpServers": {
   "iac-memory": {
     "command": "uvx",
-    "args": ["iac-memory-mcp-server"]
+    "args": [
+        "--from",
+        "git+https://github.com/AgentWong/iac-memory-mcp-server.git",
+        "python",
+        "-m",
+        "iac_memory_mcp_server"
+    ],
     "env": {
           "DATABASE_URL": "sqlite:////home/herman/iac.db"
       }
