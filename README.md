@@ -7,6 +7,8 @@ A Model Context Protocol (MCP) server that enhances Claude AI's capabilities by 
 > doesn't have subject matter expertise (lack of Python knowledge).  Since it has become rather cost
 > prohibitive, I do not intend to develop or maintain this project further.
 
+<a href="https://glama.ai/mcp/servers/g4vkk4v3w5"><img width="380" height="200" src="https://glama.ai/mcp/servers/g4vkk4v3w5/badge" alt="IaC Memory Server MCP server" /></a>
+
 ## Overview
 
 The IaC Memory MCP Server addresses the challenge of maintaining accurate, version-aware context for IaC components by providing:
