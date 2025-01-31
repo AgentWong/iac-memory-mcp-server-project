@@ -21,6 +21,7 @@ from ..db.terraform import (
     get_resource_info,
     get_terraform_provider_info,
     update_provider_version,
+    update_resource_schema,
 )
 
 # Configure module logger
@@ -308,6 +309,52 @@ async def handle_update_provider_version(
         return [types.TextContent(type="text", text=error_msg)]
 
 # Map tool names to their handlers
+async def handle_update_resource_schema(
+    db: Any, arguments: Dict[str, Any], operation_id: str
+) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
+    """Handle update_resource_schema tool."""
+    try:
+        logger.info(
+            "Updating resource schema",
+            extra={
+                "resource_id": arguments["resource_id"],
+                "operation_id": operation_id,
+            },
+        )
+
+        # Validate schema is valid JSON
+        try:
+            import json
+            json.loads(arguments["new_schema"])
+        except json.JSONDecodeError:
+            error_msg = "Invalid schema format. Schema must be valid JSON."
+            logger.error(error_msg, extra={"operation_id": operation_id})
+            return [types.TextContent(type="text", text=error_msg)]
+
+        # Update resource schema
+        success = update_resource_schema(
+            db,
+            arguments["resource_id"],
+            arguments["new_schema"],
+            arguments.get("new_version"),
+            arguments.get("new_doc_url"),
+        )
+
+        if success:
+            return [types.TextContent(
+                type="text",
+                text=f"Successfully updated schema for resource ID: {arguments['resource_id']}"
+            )]
+        else:
+            error_msg = f"Resource with ID {arguments['resource_id']} not found"
+            logger.error(error_msg, extra={"operation_id": operation_id})
+            return [types.TextContent(type="text", text=error_msg)]
+
+    except Exception as e:
+        error_msg = f"Failed to update resource schema: {str(e)}"
+        logger.error(error_msg, extra={"operation_id": operation_id})
+        return [types.TextContent(type="text", text=error_msg)]
+
 terraform_tool_handlers = {
     "get_terraform_provider_info": handle_get_terraform_provider_info,
     "list_provider_resources": handle_list_provider_resources,
@@ -315,4 +362,5 @@ terraform_tool_handlers = {
     "add_terraform_provider": handle_add_terraform_provider,
     "add_terraform_resource": handle_add_terraform_resource,
     "update_provider_version": handle_update_provider_version,
+    "update_resource_schema": handle_update_resource_schema,
 }

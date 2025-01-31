@@ -23,6 +23,8 @@ from ..db.ansible import (
     get_module_by_name,
     get_module_compatibility,
     list_ansible_collections,
+    update_collection_version,
+    update_module_version,
 )
 
 # Configure module logger
@@ -370,6 +372,90 @@ async def handle_get_module_version_compatibility(
         )
 
 
+async def handle_update_collection_version(
+    db: Any, arguments: Dict[str, Any], operation_id: str
+) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
+    """Handle update_collection_version tool."""
+    try:
+        logger.info(
+            "Updating collection version",
+            extra={
+                "collection_id": arguments["collection_id"],
+                "new_version": arguments["new_version"],
+                "operation_id": operation_id,
+            },
+        )
+
+        # Update collection version
+        result = update_collection_version(
+            db,
+            arguments["collection_id"],
+            arguments["new_version"],
+            arguments.get("new_source_url"),
+            arguments.get("new_doc_url"),
+        )
+
+        return [TextContent(
+            type="text",
+            text=f"Updated collection version: {result}"
+        )]
+
+    except Exception as e:
+        error_msg = f"Failed to update collection version: {str(e)}"
+        logger.error(error_msg, extra={"operation_id": operation_id})
+        raise McpError(
+            types.ErrorData(
+                code=types.INTERNAL_ERROR,
+                message=error_msg,
+                data={
+                    "tool": "update_collection_version",
+                    "operation_id": operation_id,
+                },
+            )
+        )
+
+async def handle_update_module_version(
+    db: Any, arguments: Dict[str, Any], operation_id: str
+) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
+    """Handle update_module_version tool."""
+    try:
+        logger.info(
+            "Updating module version",
+            extra={
+                "module_id": arguments["module_id"],
+                "new_schema": "...",  # Truncated for log
+                "operation_id": operation_id,
+            },
+        )
+
+        # Update module version
+        result = update_module_version(
+            db,
+            arguments["module_id"],
+            arguments["new_schema"],
+            arguments.get("new_version"),
+            arguments.get("new_doc_url"),
+        )
+
+        return [TextContent(
+            type="text",
+            text=f"Updated module version: {result}"
+        )]
+
+    except Exception as e:
+        error_msg = f"Failed to update module version: {str(e)}"
+        logger.error(error_msg, extra={"operation_id": operation_id})
+        raise McpError(
+            types.ErrorData(
+                code=types.INTERNAL_ERROR,
+                message=error_msg,
+                data={
+                    "tool": "update_module_version",
+                    "operation_id": operation_id,
+                },
+            )
+        )
+
 async def handle_add_ansible_collection(db: Any, arguments: Dict[str, Any], operation_id: str) -> list[types.TextContent | types.ImageContent | types.EmbeddedResource]:
     """Handle add_ansible_collection tool."""
     # Validate required arguments
@@ -479,4 +565,6 @@ ansible_tool_handlers = {
     "get_module_version_compatibility": handle_get_module_version_compatibility,
     "add_ansible_collection": handle_add_ansible_collection,
     "add_ansible_module": handle_add_ansible_module,
+    "update_collection_version": handle_update_collection_version,
+    "update_module_version": handle_update_module_version,
 }
